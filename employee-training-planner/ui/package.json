@@ -1,0 +1,13 @@
+{
+  "name": "training-ui",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "serve -s ."
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "serve": "^14.2.0"
+  }
+}

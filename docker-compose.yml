@@ -1,0 +1,14 @@
+version: '3'
+services:
+  api:
+    build: ./employee-training-planner/api-gateway
+    environment:
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
+    ports:
+      - "8000:8000"
+  ui:
+    build: ./employee-training-planner/ui
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api
