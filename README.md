@@ -4,6 +4,8 @@ This project analyzes employee data and suggests relevant certifications and cou
 
 The web interface uses Bootstrap 5 with language and dark mode toggles. Results appear in interactive cards showing roadmaps, links and prices, and can be downloaded as PDF files.
 
+If the configured model is unsupported, the server logs an error and the API returns an explanatory message. You can query `/models` to list the available models reported by OpenRouter.
+
 ## Usage
 
 ```bash
