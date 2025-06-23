@@ -3,7 +3,7 @@ import logging
 from fastapi import FastAPI, UploadFile, File
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
-from app.openrouter import generate_recommendations, fetch_available_models
+from app.openrouter import generate_recommendations
 from app.utils import parse_file
 
 logging.basicConfig(level=logging.INFO)
@@ -16,9 +16,6 @@ def index():
         return HTMLResponse(content=f.read())
 
 
-@app.get('/models')
-def models():
-    return {"models": fetch_available_models()}
 
 @app.post('/upload')
 def upload(file: UploadFile = File(...)):

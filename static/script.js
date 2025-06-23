@@ -9,8 +9,7 @@ const texts = {
     courses: 'Courses:',
     certs: 'Certifications:',
     download: 'Download PDF',
-    loading: 'Loading...',
-    models: 'Models'
+    loading: 'Loading...'
   },
   ar: {
     title: 'توصيات الموارد البشرية',
@@ -22,8 +21,7 @@ const texts = {
     courses: 'الدورات:',
     certs: 'الشهادات:',
     download: 'تحميل PDF',
-    loading: 'جاري المعالجة...',
-    models: 'النماذج'
+    loading: 'جاري المعالجة...'
   }
 };
 let currentLang = 'en';
@@ -34,7 +32,6 @@ function updateTexts() {
   document.getElementById('title').innerText = t.title;
   document.getElementById('upload-btn').innerText = t.uploadBtn;
   document.getElementById('lang-toggle').innerText = t.langButton;
-  document.getElementById('model-btn').innerText = t.models;
   document.getElementById('mode-toggle').innerText = dark ? t.light : t.dark;
   const loader = document.querySelector('#loading span');
   if (loader) loader.textContent = t.loading;
@@ -50,16 +47,6 @@ document.getElementById('mode-toggle').addEventListener('click', () => {
   dark = !dark;
   document.body.setAttribute('data-bs-theme', dark ? 'dark' : 'light');
   updateTexts();
-});
-
-document.getElementById('model-btn').addEventListener('click', async () => {
-  try {
-    const resp = await fetch('/models');
-    const data = await resp.json();
-    alert(data.models.join('\n'));
-  } catch (e) {
-    console.error(e);
-  }
 });
 
 updateTexts();

@@ -4,9 +4,13 @@ import logging
 import requests
 from functools import lru_cache
 
-OPENROUTER_API_KEY = os.getenv('OPENROUTER_API_KEY')
-OPENROUTER_URL = os.getenv('OPENROUTER_URL', 'https://openrouter.ai/api/v1/chat/completions')
-OPENROUTER_MODELS_URL = os.getenv('OPENROUTER_MODELS_URL', 'https://openrouter.ai/api/v1/models')
+OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
+OPENROUTER_URL = os.getenv(
+    "OPENROUTER_URL", "https://openrouter.ai/api/v1/chat/completions"
+)
+OPENROUTER_MODELS_URL = os.getenv(
+    "OPENROUTER_MODELS_URL", "https://openrouter.ai/api/v1/models"
+)
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
@@ -41,9 +45,31 @@ def fetch_available_models() -> list:
     return ["qwen:7b", "openai/gpt-3.5-turbo"]
 
 
-def is_valid_model(model: str) -> bool:
-    """Check if the model is in the list of available models."""
-    return model in fetch_available_models()
+
+def choose_model() -> str:
+    """Return a valid model ID, falling back to a free one if needed."""
+    env_model = os.getenv("OPENROUTER_MODEL")
+    available = fetch_available_models()
+    if env_model and env_model in available:
+        return env_model
+
+    # prefer well-known free models
+    for default in ["openai/gpt-3.5-turbo", "qwen:7b"]:
+        if default in available:
+            if env_model and env_model not in available:
+                logger.warning(
+                    "Model %s is invalid; falling back to %s", env_model, default
+                )
+            return default
+
+    if available:
+        logger.warning(
+            "No preferred free model available; using %s", available[0]
+        )
+        return available[0]
+
+    # as last resort return env model or default string
+    return env_model or "openai/gpt-3.5-turbo"
 
 
 def generate_recommendations(employee: dict):
@@ -52,12 +78,7 @@ def generate_recommendations(employee: dict):
             "error": "OPENROUTER_API_KEY not configured",
             "prompt": employee
         }
-    model = os.getenv("OPENROUTER_MODEL", "qwen:7b")
-    if not is_valid_model(model):
-        available = ", ".join(fetch_available_models())
-        msg = f"Model {model} is not valid. Available models: {available}"
-        logger.error(msg)
-        return {"error": msg}
+    model = choose_model()
 
     messages = [
         {"role": "system", "content": PROMPT_TEMPLATE},

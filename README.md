@@ -4,7 +4,7 @@ This project analyzes employee data and suggests relevant certifications and cou
 
 The web interface uses Bootstrap 5 with language and dark mode toggles. Results appear in interactive cards showing roadmaps, links and prices, and can be downloaded as PDF files.
 
-If the configured model is unsupported, the server logs an error and the API returns an explanatory message. You can query `/models` to list the available models reported by OpenRouter.
+The application automatically checks the available OpenRouter models. If the model configured in `.env` is unavailable, it falls back to a free option such as `openai/gpt-3.5-turbo`.
 
 ## Usage
 
