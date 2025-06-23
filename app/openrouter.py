@@ -40,8 +40,10 @@ def generate_recommendations(employee: dict):
         "Authorization": f"Bearer {OPENROUTER_API_KEY}",
         "Content-Type": "application/json",
     }
+    logger.info("Sending payload for %s: %s", employee.get("name"), json.dumps(payload, ensure_ascii=False))
     try:
         resp = requests.post(OPENROUTER_URL, json=payload, headers=headers, timeout=60)
+        logger.info("OpenRouter response text for %s: %s", employee.get("name"), resp.text)
         resp.raise_for_status()
         data = resp.json()
         logger.debug("OpenRouter raw response: %s", data)

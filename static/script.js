@@ -107,6 +107,17 @@ document.getElementById('upload-form').addEventListener('submit', async (e) => {
     title.className = 'card-title';
     title.textContent = item.employee;
     card.appendChild(title);
+    if (item.recommendations.error) {
+      const err = document.createElement('p');
+      err.className = 'text-danger';
+      err.textContent = item.recommendations.error;
+      card.appendChild(err);
+    }
+    if (item.recommendations.raw) {
+      const pre = document.createElement('pre');
+      pre.textContent = item.recommendations.raw;
+      card.appendChild(pre);
+    }
     if (item.recommendations.roadmap) {
       const subtitle = document.createElement('h6');
       subtitle.textContent = texts[currentLang].roadmap;
