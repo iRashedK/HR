@@ -1,9 +1,13 @@
 import os
 import json
+import logging
 import requests
 
 OPENROUTER_API_KEY = os.getenv('OPENROUTER_API_KEY')
 OPENROUTER_URL = os.getenv('OPENROUTER_URL', 'https://openrouter.ai/api/v1/chat/completions')
+
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO)
 
 PROMPT_TEMPLATE = (
     """You are an HR assistant. For the following employee data, recommend important\n"
@@ -40,10 +44,13 @@ def generate_recommendations(employee: dict):
         resp = requests.post(OPENROUTER_URL, json=payload, headers=headers, timeout=60)
         resp.raise_for_status()
         data = resp.json()
+        logger.debug("OpenRouter raw response: %s", data)
         content = data.get("choices", [{}])[0].get("message", {}).get("content", "")
+        logger.info("OpenRouter content for %s: %s", employee.get("name"), content)
         try:
             return json.loads(content)
         except Exception:
             return {"raw": content}
     except Exception as e:
+        logger.error("Error from OpenRouter for %s: %s", employee.get("name"), e)
         return {"error": str(e)}

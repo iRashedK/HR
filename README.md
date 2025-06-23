@@ -2,7 +2,7 @@
 
 This project analyzes employee data and suggests relevant certifications and courses using OpenRouter AI. Upload a CSV or Excel file with employee information and get structured recommendations.
 
-The web interface is built with Bootstrap 5 and supports a dark/light mode toggle and switching between Arabic and English.
+The web interface uses Bootstrap 5 with language and dark mode toggles. Results appear in interactive cards showing roadmaps, links and prices, and can be downloaded as PDF files.
 
 ## Usage
 
