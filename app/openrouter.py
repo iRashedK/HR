@@ -142,7 +142,20 @@ def generate_recommendations(employee: dict):
             except Exception:
                 err = resp.text
             logger.error("OpenRouter returned %s: %s", resp.status_code, err)
-            return {"error": err}
+            if "not a valid model" in err.lower() and model != "openai/gpt-3.5-turbo":
+                logger.info("Retrying with fallback model openai/gpt-3.5-turbo")
+                payload["model"] = "openai/gpt-3.5-turbo"
+                resp = requests.post(OPENROUTER_URL, json=payload, headers=headers, timeout=60)
+                logger.info("Retry response: %s", resp.text)
+                if resp.status_code != 200:
+                    try:
+                        err = resp.json().get("error", {}).get("message", resp.text)
+                    except Exception:
+                        err = resp.text
+                    logger.error("OpenRouter returned %s: %s", resp.status_code, err)
+                    return {"error": err}
+            else:
+                return {"error": err}
 
         try:
             data = resp.json()

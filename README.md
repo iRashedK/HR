@@ -21,3 +21,5 @@ cp .env.example .env
 make up  # runs docker compose up
 ```
 Open <http://localhost:8000> in your browser. Upload a CSV or Excel file and wait while the analyzer service fills the results table.
+
+The app checks the model configured in `.env`. If the ID is invalid, it will retry automatically with the free `openai/gpt-3.5-turbo` model so processing continues without user intervention.
