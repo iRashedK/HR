@@ -2,13 +2,12 @@ const texts = {
   ar: {
     title: 'رشُد',
     subtitle: 'منصة الذكاء الاصطناعي لإرشاد الموظفين نحو التطور المهني',
-  uploadBtn: 'رفع',
-  drop: 'اسحب الملف هنا أو اضغط لاختياره',
-  employees: 'عدد الموظفين',
-  totalCost: 'إجمالي التكلفة',
-  badge: 'مقترحة بشدة',
-  failed: '❌ فشل التحليل',
-  langButton: 'English',
+    drop: 'اسحب الملف هنا أو اضغط لاختياره',
+    employees: 'عدد الموظفين',
+    totalCost: 'إجمالي التكلفة',
+    badge: 'مقترحة بشدة',
+    failed: '❌ فشل التحليل',
+    langButton: 'English',
     dark: '🌙',
     light: '☀️',
     visit: 'زيارة الرابط',
@@ -18,13 +17,12 @@ const texts = {
   en: {
     title: 'Rushed',
     subtitle: 'AI platform guiding employees to professional growth',
-  uploadBtn: 'Upload',
-  drop: 'Drag file here or click to choose',
-  employees: 'Employees',
-  totalCost: 'Total Cost',
-  badge: 'Highly recommended',
-  failed: '❌ Analysis failed',
-  langButton: 'عربي',
+    drop: 'Drag file here or click to choose',
+    employees: 'Employees',
+    totalCost: 'Total Cost',
+    badge: 'Highly recommended',
+    failed: '❌ Analysis failed',
+    langButton: 'عربي',
     dark: '🌙',
     light: '☀️',
     visit: 'Visit Link',
@@ -42,7 +40,6 @@ function updateTexts() {
   const t = texts[currentLang];
   document.getElementById('title').textContent = t.title;
   document.getElementById('subtitle').textContent = t.subtitle;
-  document.getElementById('upload-btn').textContent = t.uploadBtn;
   document.getElementById('drop-text').textContent = t.drop;
   document.getElementById('lang-toggle').textContent = t.langButton;
   document.getElementById('mode-toggle').textContent = dark ? t.light : t.dark;
@@ -74,6 +71,7 @@ dropzone.addEventListener('drop', e => {
   if (e.dataTransfer.files.length) {
     selectedFile = e.dataTransfer.files[0];
     fileInfo.textContent = selectedFile.name;
+    uploadFile();
   }
 });
 
@@ -81,6 +79,7 @@ fileInput.addEventListener('change', () => {
   if (fileInput.files.length) {
     selectedFile = fileInput.files[0];
     fileInfo.textContent = selectedFile.name;
+    uploadFile();
   }
 });
 
@@ -300,8 +299,7 @@ async function poll(jobId, count) {
   stopProgress();
 }
 
-document.getElementById('upload-form').addEventListener('submit', async (e) => {
-  e.preventDefault();
+async function uploadFile() {
   if (!selectedFile) return;
   const formData = new FormData();
   formData.append('file', selectedFile);
@@ -324,4 +322,9 @@ document.getElementById('upload-form').addEventListener('submit', async (e) => {
   fileInfo.textContent = `${selectedFile.name} - ${data.count} ${texts[currentLang].employees}`;
   selectedFile = null;
   poll(data.job_id, data.count);
+}
+
+document.getElementById('upload-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  uploadFile();
 });

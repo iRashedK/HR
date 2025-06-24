@@ -2,10 +2,10 @@
   --bg1: #f6f7f9;
   --bg2: #e2e3e7;
   --text: #222;
-  --accent: #6366f1;
+  --accent: #845ef7;
   --card-bg: rgba(255,255,255,0.9);
   --cert-bg: #eaf0f6;
-  --course-bg: #e5f9e7;
+  --course-bg: #eceaff;
 }
 
 body.dark {
@@ -14,7 +14,7 @@ body.dark {
   --text: #eee;
   --card-bg: rgba(40,44,52,0.9);
   --cert-bg: #2a3448;
-  --course-bg: #243030;
+  --course-bg: #2d2840;
 }
 
 body {
@@ -36,11 +36,11 @@ body {
 
 .dropzone {
   border: 3px dashed var(--accent);
-  border-radius: 1.25rem;
-  padding: 2rem;
+  border-radius: 1.5rem;
+  padding: 3rem;
   text-align: center;
   cursor: pointer;
-  transition: background 0.3s, box-shadow 0.3s;
+  transition: background 0.3s, box-shadow 0.3s, transform 0.3s;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -48,8 +48,9 @@ body {
 }
 
 .dropzone.over {
-  background: rgba(99, 102, 241, 0.1);
-  box-shadow: 0 0 10px var(--accent);
+  background: rgba(132, 94, 247, 0.15);
+  box-shadow: 0 0 12px var(--accent);
+  transform: scale(1.02);
 }
 
 .icon-circle {
@@ -64,10 +65,6 @@ body {
   color: var(--accent);
 }
 
-.dropzone button {
-  margin-top: 0.5rem;
-  width: 140px;
-}
 
 .file-info {
   margin: 0.5rem 0 1rem;
@@ -87,11 +84,11 @@ body {
   content: '';
   position: absolute;
   inset: 0;
-  width: 90%;
-  margin: auto;
-  background: linear-gradient(120deg, var(--accent), transparent);
-  opacity: 0.15;
-  border-radius: 1rem;
+  width: 100%;
+  background: linear-gradient(90deg, var(--accent), transparent);
+  opacity: 0.2;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  backdrop-filter: blur(4px);
   z-index: -1;
 }
 
@@ -199,7 +196,7 @@ button.secondary {
 }
 
 .step {
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.25rem;
 }
 
 .step-number {
@@ -237,7 +234,7 @@ button.secondary {
 .item.step-2 { background: linear-gradient(135deg, #e0e7ff, #eef2ff); }
 .item.step-3 { background: linear-gradient(135deg, #dbeafe, #eef2ff); }
 .item.step-4 { background: linear-gradient(135deg, #fae8ff, #eef2ff); }
-.item.step-5 { background: linear-gradient(135deg, #fef3c7, #eef2ff); }
+.item.step-5 { background: linear-gradient(135deg, #fde2e4, #eef2ff); }
 .item-header {
   display: flex;
   flex-direction: column;
