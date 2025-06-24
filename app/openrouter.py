@@ -12,6 +12,7 @@ OPENROUTER_URL = os.getenv(
 OPENROUTER_MODELS_URL = os.getenv(
     "OPENROUTER_MODELS_URL", "https://openrouter.ai/api/v1/models"
 )
+ANALYSIS_LANGUAGE = os.getenv("USED_LANGUAGE", "Arabic")
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
@@ -20,14 +21,14 @@ PROMPT_TEMPLATE = (
     """You are an HR assistant. For the following employee data, recommend important\n"
     "certifications and courses that will improve the employee's career.\n"
     "Return at least five certifications and five courses.\n"
-    "Provide the response in Arabic only. The output must be strictly one JSON object\n"
+    "Provide the response in {lang} only. The output must be strictly one JSON object\n"
     "with the following format. Mention the certification or course names within the\n"
     "roadmap steps so they can be matched visually so our UI can sort them:\n"
-    "{\n"
-    "  \"certifications\": [ {\"name\":..., \"link\":..., \"price\":... } ],\n"
-    "  \"courses\": [ {\"name\":..., \"link\":..., \"price\":... } ],\n"
+    "{{\n"
+    "  \"certifications\": [ {{\"name\":..., \"link\":..., \"price\":... }} ],\n"
+    "  \"courses\": [ {{\"name\":..., \"link\":..., \"price\":... }} ],\n"
     "  \"roadmap\": [ \"step 1 mentions PMP\", \"step 2 mentions course name\", ... ]\n"
-    "}\n"
+    "}}\n"
     "Return only this JSON object and nothing else."""
 )
 
@@ -46,19 +47,19 @@ def fetch_available_models() -> list:
     except Exception as exc:
         logger.error("Failed to fetch models list: %s", exc)
     # fallback to a minimal list
-    return ["qwen:7b", "openai/gpt-3.5-turbo"]
+    return ["deepseek/deepseek-r1-0528:free", "openai/gpt-3.5-turbo"]
 
 
 
 def choose_model() -> str:
     """Return a valid model ID, falling back to a free one if needed."""
-    env_model = os.getenv("OPENROUTER_MODEL")
+    env_model = os.getenv("OPENROUTER_ANALYSIS_MODEL", "deepseek/deepseek-r1-0528:free")
     available = fetch_available_models()
     if env_model and env_model in available:
         return env_model
 
     # prefer well-known free models
-    for default in ["openai/gpt-3.5-turbo", "qwen:7b"]:
+    for default in ["deepseek/deepseek-r1-0528:free", "openai/gpt-3.5-turbo"]:
         if default in available:
             if env_model and env_model not in available:
                 logger.warning(
@@ -121,7 +122,7 @@ def generate_recommendations(employee: dict):
     model = choose_model()
 
     messages = [
-        {"role": "system", "content": PROMPT_TEMPLATE},
+        {"role": "system", "content": PROMPT_TEMPLATE.format(lang=ANALYSIS_LANGUAGE)},
         {"role": "user", "content": str(employee)},
     ]
     payload = {

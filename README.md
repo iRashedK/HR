@@ -10,7 +10,7 @@ This project "رشُد" analyzes employee data and suggests relevant certificati
 
 The frontend offers a modern indigo theme with Arabic/English support and dark/light mode. Results appear in animated cards grouped by roadmap steps with links, prices and PDF export.
 
-The application checks available OpenRouter models. If the model configured in `.env` is unavailable, it falls back to a free option such as `openai/gpt-3.5-turbo`.
+The application checks available OpenRouter models. By default it uses the free `deepseek/deepseek-r1-0528:free` model. If the model configured in `.env` (`OPENROUTER_ANALYSIS_MODEL`) is unavailable, it falls back to another free option such as `openai/gpt-3.5-turbo`.
 
 ## Usage
 ```bash
@@ -18,6 +18,7 @@ git clone <repo-url>
 cd HR
 cp .env.example .env
 # edit .env and add your OPENROUTER_API_KEY
+# you may also change `OPENROUTER_ANALYSIS_MODEL` or `USED_LANGUAGE`
 make up  # runs docker compose up
 ```
 Open <http://localhost:8000> in your browser. Upload a CSV or Excel file and wait while the analyzer service fills the results table.
