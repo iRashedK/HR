@@ -86,17 +86,35 @@ updateTexts();
 function createItem(item, type, highlight = false) {
   const div = document.createElement('div');
   div.className = `item ${type}`;
+
+  const header = document.createElement('div');
+  header.className = 'item-header';
   const icon = document.createElement('span');
+  icon.className = 'item-icon';
   icon.textContent = type === 'cert' ? '🎓' : '📘';
-  const txt = document.createElement('span');
-  txt.textContent = `${item.name}` + (item.price ? ` - ${item.price}` : '');
+  const title = document.createElement('span');
+  title.className = 'item-title';
+  title.textContent = item.name;
+  header.appendChild(icon);
+  header.appendChild(title);
+  div.appendChild(header);
+
+  const body = document.createElement('div');
+  body.className = 'item-body';
+  if (item.price) {
+    const price = document.createElement('span');
+    price.className = 'price';
+    price.textContent = `\uD83D\uDCB8 ${item.price}`; // 💸
+    body.appendChild(price);
+  }
   const link = document.createElement('a');
   link.href = item.link || '#';
+  link.className = 'link-btn';
   link.textContent = texts[currentLang].visit;
   link.target = '_blank';
-  div.appendChild(icon);
-  div.appendChild(txt);
-  div.appendChild(link);
+  body.appendChild(link);
+  div.appendChild(body);
+
   if (highlight) {
     const b = document.createElement('span');
     b.className = 'badge';
