@@ -46,7 +46,7 @@ body {
   align-items: center;
   gap: 1rem;
   background: linear-gradient(135deg, var(--card-bg), var(--bg1));
-  box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.07);
 }
 
 .dropzone.over {
@@ -56,14 +56,14 @@ body {
 }
 
 .icon-circle {
-  width: 80px;
-  height: 80px;
+  width: 120px;
+  height: 120px;
   border-radius: 50%;
   border: 2px dashed var(--accent);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 2rem;
+  font-size: 3rem;
   color: var(--accent);
 }
 
@@ -201,16 +201,11 @@ button.secondary {
   margin-bottom: 0.5rem;
 }
 
-.step-desc-main {
-  text-align: center;
-  font-weight: 600;
-  margin-bottom: 0.25rem;
-}
-
 .step-desc {
   text-align: center;
   font-weight: 500;
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.5rem;
+  color: var(--accent);
 }
 
 .step-number {
@@ -255,7 +250,7 @@ button.secondary {
   align-items: center;
   gap: .25rem;
   font-weight: 600;
-  font-size: 1.05rem;
+  font-size: 1.2rem;
   margin-bottom: .5rem;
 }
 .item-body {

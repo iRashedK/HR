@@ -114,13 +114,21 @@ function parsePrice(val) {
 
 function localizeStepText(text) {
   if (!text) return '';
-  const arMatch = text.match(/الخطوة\s*(\d+)/);
   const enMatch = text.match(/step\s*(\d+)/i);
-  const num = arMatch ? arMatch[1] : enMatch ? enMatch[1] : '';
+  const arMatch = text.match(/الخطوة\s*(\d+)/);
   if (currentLang === 'ar') {
-    return num ? `الخطوة ${num}` : text;
+    if (arMatch) return text;
+    if (enMatch) {
+      return `الخطوة ${enMatch[1]} ${text.replace(/step\s*\d+/i, '').trim()}`;
+    }
+    return text;
+  } else {
+    if (enMatch) return text;
+    if (arMatch) {
+      return `Step ${arMatch[1]} ${text.replace(/الخطوة\s*\d+/, '').trim()}`;
+    }
+    return text;
   }
-  return num ? `Step ${num}` : text;
 }
 
 function createItem(item, type, highlight = false, stepIndex = 1, stepText = '') {
@@ -215,10 +223,6 @@ function createJourney(steps, courses, certs) {
     const block = document.createElement('div');
     block.className = 'step';
     const stepText = localizeStepText(step);
-    const desc = document.createElement('div');
-    desc.className = 'step-desc-main';
-    desc.textContent = stepText;
-    block.appendChild(desc);
 
     const stepLower = step.toLowerCase();
 
