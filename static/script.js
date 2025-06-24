@@ -233,6 +233,74 @@ function printCard(card, name) {
   win.close();
 }
 
+async function render(data) {
+  const resultsDiv = document.getElementById('results');
+  resultsDiv.innerHTML = '';
+  const allCourses = [];
+  const allCerts = [];
+  data.results.forEach(item => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    const h3 = document.createElement('h3');
+    h3.textContent = item.employee;
+    card.appendChild(h3);
+    if (item.status !== 'done') {
+      const wait = document.createElement('div');
+      wait.textContent = texts[currentLang].loading;
+      card.appendChild(wait);
+    } else {
+      const rec = item.recommendations || {};
+      if (rec.error) {
+        const err = document.createElement('div');
+        err.className = 'alert';
+        err.textContent = rec.error;
+        card.appendChild(err);
+      } else if (rec.roadmap) {
+        card.appendChild(createJourney(rec.roadmap, rec.courses || [], rec.certifications || []));
+        const total = [...(rec.courses || []), ...(rec.certifications || [])]
+          .reduce((s, x) => s + (Number(x.price) || 0), 0);
+        const totEl = document.createElement('div');
+        totEl.className = 'total';
+        totEl.textContent = `${texts[currentLang].totalCost}: ${total}`;
+        card.appendChild(totEl);
+        const budget = 2000;
+        const progress = document.createElement('div');
+        progress.className = 'budget';
+        const bar = document.createElement('div');
+        bar.className = 'bar';
+        bar.style.width = Math.min(100, (total / budget) * 100) + '%';
+        progress.appendChild(bar);
+        card.appendChild(progress);
+        if (rec.courses) allCourses.push(...rec.courses);
+        if (rec.certifications) allCerts.push(...rec.certifications);
+      }
+    }
+    const btn = document.createElement('button');
+    btn.className = 'secondary';
+    btn.textContent = texts[currentLang].download;
+    btn.onclick = () => printCard(card, item.employee);
+    card.appendChild(btn);
+    resultsDiv.appendChild(card);
+  });
+  localStorage.setItem('catalog', JSON.stringify({ courses: allCourses, certifications: allCerts }));
+  localStorage.setItem('results', JSON.stringify(data.results));
+}
+
+async function poll(jobId, count) {
+  let done = 0;
+  while (done < count) {
+    const resp = await fetch(`/results?job=${jobId}`);
+    const data = await resp.json();
+    await render(data);
+    done = data.results.filter(r => r.status === 'done').length;
+    const progress = Math.round((done / count) * 100);
+    document.getElementById('progress-bar').style.width = progress + '%';
+    if (done < count) await new Promise(res => setTimeout(res, 3000));
+  }
+  document.getElementById('overlay').classList.add('hidden');
+  stopProgress();
+}
+
 document.getElementById('upload-form').addEventListener('submit', async (e) => {
   e.preventDefault();
   if (!selectedFile) return;
@@ -254,55 +322,7 @@ document.getElementById('upload-form').addEventListener('submit', async (e) => {
     stopProgress();
     return;
   }
-  const resultsDiv = document.getElementById('results');
-  resultsDiv.innerHTML = '';
-  fileInfo.textContent = `${selectedFile.name} - ${data.results.length} ${texts[currentLang].employees}`;
-  data.results.forEach(item => {
-    const card = document.createElement('div');
-    card.className = 'card';
-    const h3 = document.createElement('h3');
-    h3.textContent = item.employee;
-    card.appendChild(h3);
-    const rec = item.recommendations || {};
-    if (rec.error) {
-      const err = document.createElement('div');
-      err.className = 'alert';
-      err.textContent = rec.error;
-      card.appendChild(err);
-    } else if (rec.roadmap) {
-      card.appendChild(createJourney(rec.roadmap, rec.courses || [], rec.certifications || []));
-      const total = [...(rec.courses || []), ...(rec.certifications || [])]
-        .reduce((s, x) => s + (Number(x.price) || 0), 0);
-      const totEl = document.createElement('div');
-      totEl.className = 'total';
-      totEl.textContent = `${texts[currentLang].totalCost}: ${total}`;
-      card.appendChild(totEl);
-      const budget = 2000;
-      const progress = document.createElement('div');
-      progress.className = 'budget';
-      const bar = document.createElement('div');
-      bar.className = 'bar';
-      bar.style.width = Math.min(100, (total / budget) * 100) + '%';
-      progress.appendChild(bar);
-      card.appendChild(progress);
-    }
-    const btn = document.createElement('button');
-    btn.className = 'secondary';
-    btn.textContent = texts[currentLang].download;
-    btn.onclick = () => printCard(card, item.employee);
-    card.appendChild(btn);
-    resultsDiv.appendChild(card);
-  });
-  const allCourses = [];
-  const allCerts = [];
-  data.results.forEach(item => {
-    const rec = item.recommendations || {};
-    if (rec.courses) allCourses.push(...rec.courses);
-    if (rec.certifications) allCerts.push(...rec.certifications);
-  });
-  localStorage.setItem('catalog', JSON.stringify({ courses: allCourses, certifications: allCerts }));
-  localStorage.setItem('results', JSON.stringify(data.results));
-  document.getElementById('overlay').classList.add('hidden');
-  stopProgress();
+  fileInfo.textContent = `${selectedFile.name} - ${data.count} ${texts[currentLang].employees}`;
   selectedFile = null;
+  poll(data.job_id, data.count);
 });

@@ -1,13 +1,18 @@
 # HR Recommendations
 
-This project analyzes employee data and suggests relevant certifications and courses using OpenRouter AI. Upload a CSV or Excel file with employee information and get structured recommendations.
+This project "رشُد" analyzes employee data and suggests relevant certifications and courses using OpenRouter AI. It runs entirely inside Docker Compose and uses a small microservices architecture.
 
-The web interface is built with Bootstrap 5 and provides a sidebar layout with Arabic RTL support. It includes language and dark mode toggles. Results appear in animated cards grouped under their roadmap steps with links, prices and PDF export. A library page lets you browse saved courses and certifications, and a dashboard page displays basic charts using Chart.js.
+## Components
+- **app**: FastAPI gateway serving the web UI and accepting uploads.
+- **analyzer**: Worker service consuming tasks from RabbitMQ and calling OpenRouter.
+- **RabbitMQ**: message broker for asynchronous processing.
+- **PostgreSQL**: stores recommendations.
 
-The application automatically checks the available OpenRouter models. If the model configured in `.env` is unavailable, it falls back to a free option such as `openai/gpt-3.5-turbo`.
+The frontend supports Arabic/English and dark/light mode without external CSS libraries. Results appear in animated cards grouped under roadmap steps with links, prices and PDF export.
+
+The application checks available OpenRouter models. If the model configured in `.env` is unavailable, it falls back to a free option such as `openai/gpt-3.5-turbo`.
 
 ## Usage
-
 ```bash
 git clone <repo-url>
 cd HR
@@ -15,5 +20,4 @@ cp .env.example .env
 # edit .env and add your OPENROUTER_API_KEY
 make up
 ```
-
-The application will be available at `http://localhost:8000`.
+Open <http://localhost:8000> in your browser. Upload a CSV or Excel file and wait while the analyzer service fills the results table.

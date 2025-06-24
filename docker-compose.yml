@@ -6,3 +6,26 @@ services:
       - "8000:8000"
     env_file:
       - .env
+    depends_on:
+      - db
+      - rabbitmq
+  analyzer:
+    build: .
+    command: python -m app.analyzer_service
+    env_file:
+      - .env
+    depends_on:
+      - db
+      - rabbitmq
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: hr
+    ports:
+      - "5432:5432"
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
