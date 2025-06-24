@@ -22,6 +22,12 @@ def library():
         return HTMLResponse(content=f.read())
 
 
+@app.get('/dashboard', response_class=HTMLResponse)
+def dashboard():
+    with open('templates/dashboard.html', 'r', encoding='utf-8') as f:
+        return HTMLResponse(content=f.read())
+
+
 
 @app.post('/upload')
 def upload(file: UploadFile = File(...)):

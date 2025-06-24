@@ -301,6 +301,7 @@ document.getElementById('upload-form').addEventListener('submit', async (e) => {
     if (rec.certifications) allCerts.push(...rec.certifications);
   });
   localStorage.setItem('catalog', JSON.stringify({ courses: allCourses, certifications: allCerts }));
+  localStorage.setItem('results', JSON.stringify(data.results));
   document.getElementById('overlay').classList.add('hidden');
   stopProgress();
   selectedFile = null;
