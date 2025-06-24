@@ -103,8 +103,7 @@ function stopProgress() {
 }
 
 function parsePrice(val) {
-  if (!val) return 0;
-  const m = String(val).match(/([\d,.]+)/);
+  const m = String(val ?? '').match(/([\d,.]+)/);
   return m ? parseFloat(m[1].replace(/,/g, '')) || 0 : 0;
 }
 
@@ -135,18 +134,6 @@ function createItem(item, type, highlight = false, stepIndex = 1) {
   }
   header.appendChild(icon);
   header.appendChild(title);
-  if (item.price) {
-    const priceBadge = document.createElement('span');
-    priceBadge.className = 'badge price-badge tooltip';
-    priceBadge.textContent = `💸${item.price}`;
-    if (String(item.price).length > 6) {
-      const tip = document.createElement('span');
-      tip.className = 'tip';
-      tip.textContent = item.price;
-      priceBadge.appendChild(tip);
-    }
-    header.appendChild(priceBadge);
-  }
   div.appendChild(header);
 
   const body = document.createElement('div');
@@ -158,6 +145,19 @@ function createItem(item, type, highlight = false, stepIndex = 1) {
   link.target = '_blank';
   body.appendChild(link);
   div.appendChild(body);
+
+  if (item.price) {
+    const priceTag = document.createElement('span');
+    priceTag.className = 'price-tag tooltip';
+    priceTag.textContent = `💸 ${item.price}`;
+    if (String(item.price).length > 6) {
+      const tip = document.createElement('span');
+      tip.className = 'tip';
+      tip.textContent = item.price;
+      priceTag.appendChild(tip);
+    }
+    div.appendChild(priceTag);
+  }
 
   const badge = document.createElement('div');
   badge.className = 'step-number';

@@ -141,11 +141,13 @@ def generate_recommendations(employee: dict):
         content = data.get("choices", [{}])[0].get("message", {}).get("content", "")
         logger.info("OpenRouter content for %s: %s", employee.get("name"), content)
         objs = extract_json_objects(content)
-        if not objs:
+        if not objs and content.strip().startswith('{'):
             try:
-                objs = [json.loads(content)]
+                objs = [json.loads(content.strip())]
             except Exception:
-                return {"raw": content}
+                pass
+        if not objs:
+            return {"raw": content}
         if len(objs) == 1:
             return objs[0]
         return merge_json_results(objs)
