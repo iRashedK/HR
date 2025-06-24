@@ -1,26 +1,29 @@
 :root {
-  --bg: #f6f7f9;
+  --bg1: #f6f7f9;
+  --bg2: #e2e3e7;
   --text: #222;
   --accent: #4b6bfb;
-  --card-bg: #fff;
+  --card-bg: rgba(255,255,255,0.9);
   --cert-bg: #eef5ff;
   --course-bg: #f0f8f0;
 }
 
 body.dark {
-  --bg: #1f1f27;
+  --bg1: #1f1f27;
+  --bg2: #14141c;
   --text: #eee;
-  --card-bg: #282c34;
+  --card-bg: rgba(40,44,52,0.9);
   --cert-bg: #2a3448;
   --course-bg: #243030;
 }
 
 body {
-  background: var(--bg);
+  background: linear-gradient(135deg, var(--bg1), var(--bg2));
   color: var(--text);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Cairo', sans-serif;
   margin: 0;
   transition: background 0.3s, color 0.3s;
+  min-height: 100vh;
 }
 
 .container {
@@ -34,6 +37,16 @@ body {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1rem;
+}
+
+.titles {
+  text-align: center;
+}
+
+.subtitle {
+  font-size: 0.9rem;
+  margin-top: -0.5rem;
+  opacity: 0.8;
 }
 
 .actions button {
@@ -53,6 +66,11 @@ button {
   background: var(--accent);
   color: #fff;
   cursor: pointer;
+  transition: transform 0.3s;
+}
+
+button:hover {
+  transform: scale(1.05);
 }
 
 button.secondary {
@@ -83,7 +101,38 @@ button.secondary {
   background: var(--card-bg);
   border-radius: 1rem;
   padding: 1rem;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+}
+
+.journey {
+  position: relative;
+  padding-left: 2rem;
+}
+
+.step {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.step-number {
+  position: absolute;
+  left: -2rem;
+  top: 0;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
 }
 
 .item {
@@ -92,31 +141,14 @@ button.secondary {
   justify-content: space-between;
   padding: .5rem 1rem;
   border-radius: .5rem;
-  margin-bottom: .5rem;
+  margin-top: .5rem;
 }
 
-.item.cert {
-  background: var(--cert-bg);
-}
-
-.item.course {
-  background: var(--course-bg);
-}
-
+.item.cert { background: var(--cert-bg); }
+.item.course { background: var(--course-bg); }
 .item a {
   color: var(--accent);
   text-decoration: none;
-}
-
-.roadmap-step {
-  display: flex;
-  align-items: center;
-  margin-bottom: .5rem;
-}
-
-.roadmap-step-number {
-  font-weight: bold;
-  margin-right: .5rem;
 }
 
 .overlay {
@@ -130,9 +162,7 @@ button.secondary {
   z-index: 100;
 }
 
-.overlay.hidden {
-  display: none;
-}
+.overlay.hidden { display: none; }
 
 .spinner {
   border: 4px solid #ccc;
@@ -144,17 +174,11 @@ button.secondary {
   margin-bottom: .5rem;
 }
 
-@keyframes spin {
-  from { transform: rotate(0); }
-  to { transform: rotate(360deg); }
-}
+@keyframes spin { from { transform: rotate(0); } to { transform: rotate(360deg); } }
 
 @media (max-width: 600px) {
-  .upload {
-    flex-direction: column;
-  }
-  .actions button {
-    margin-left: 0;
-    margin-right: .5rem;
-  }
+  .upload { flex-direction: column; }
+  .actions button { margin-left: 0; margin-right: .5rem; }
+  .journey { padding-left: 1.5rem; }
+  .step-number { left: -1.5rem; }
 }

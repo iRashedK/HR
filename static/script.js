@@ -1,26 +1,22 @@
 const texts = {
   ar: {
-    title: 'توصيات الموارد البشرية',
+    title: 'رشُد',
+    subtitle: 'منصة الذكاء الاصطناعي لإرشاد الموظفين نحو التطور المهني',
     uploadBtn: 'رفع',
     langButton: 'English',
     dark: '🌙',
     light: '☀️',
-    roadmap: 'خارطة الطريق',
-    courses: 'الدورات',
-    certs: 'الشهادات',
     visit: 'زيارة الرابط',
     download: 'حفظ PDF',
     loading: 'جاري المعالجة...'
   },
   en: {
-    title: 'HR Recommendations',
+    title: 'Rushed',
+    subtitle: 'AI platform guiding employees to professional growth',
     uploadBtn: 'Upload',
     langButton: 'عربي',
     dark: '🌙',
     light: '☀️',
-    roadmap: 'Roadmap',
-    courses: 'Courses',
-    certs: 'Certifications',
     visit: 'Visit Link',
     download: 'Save PDF',
     loading: 'Loading...'
@@ -33,6 +29,7 @@ let dark = false;
 function updateTexts() {
   const t = texts[currentLang];
   document.getElementById('title').textContent = t.title;
+  document.getElementById('subtitle').textContent = t.subtitle;
   document.getElementById('upload-btn').textContent = t.uploadBtn;
   document.getElementById('lang-toggle').textContent = t.langButton;
   document.getElementById('mode-toggle').textContent = dark ? t.light : t.dark;
@@ -56,34 +53,50 @@ updateTexts();
 function createItem(item, type) {
   const div = document.createElement('div');
   div.className = `item ${type}`;
-  const left = document.createElement('span');
-  left.textContent = type === 'cert' ? '🎓' : '📘';
-  const middle = document.createElement('span');
-  middle.textContent = `${item.name || item.title}` + (item.price ? ` - ${item.price}` : '');
+  const icon = document.createElement('span');
+  icon.textContent = type === 'cert' ? '🎓' : '📘';
+  const txt = document.createElement('span');
+  txt.textContent = `${item.name}` + (item.price ? ` - ${item.price}` : '');
   const link = document.createElement('a');
   link.href = item.link || '#';
   link.textContent = texts[currentLang].visit;
   link.target = '_blank';
-  div.appendChild(left);
-  div.appendChild(middle);
+  div.appendChild(icon);
+  div.appendChild(txt);
   div.appendChild(link);
   return div;
 }
 
-function createRoadmap(steps) {
+function createJourney(steps, courses, certs) {
   const container = document.createElement('div');
+  container.className = 'journey';
+  const used = new Set();
   steps.forEach((step, idx) => {
-    const row = document.createElement('div');
-    row.className = 'roadmap-step';
-    const num = document.createElement('span');
-    num.className = 'roadmap-step-number';
+    const block = document.createElement('div');
+    block.className = 'step';
+    const num = document.createElement('div');
+    num.className = 'step-number';
     num.textContent = idx + 1;
-    const text = document.createElement('span');
-    text.textContent = step;
-    row.appendChild(num);
-    row.appendChild(text);
-    container.appendChild(row);
+    block.appendChild(num);
+    const desc = document.createElement('div');
+    desc.textContent = step;
+    block.appendChild(desc);
+    courses.forEach(c => {
+      if (!used.has(c.name) && step.includes(c.name)) {
+        block.appendChild(createItem(c, 'course'));
+        used.add(c.name);
+      }
+    });
+    certs.forEach(c => {
+      if (!used.has(c.name) && step.includes(c.name)) {
+        block.appendChild(createItem(c, 'cert'));
+        used.add(c.name);
+      }
+    });
+    container.appendChild(block);
   });
+  courses.forEach(c => { if (!used.has(c.name)) container.appendChild(createItem(c, 'course')); });
+  certs.forEach(c => { if (!used.has(c.name)) container.appendChild(createItem(c, 'cert')); });
   return container;
 }
 
@@ -130,24 +143,8 @@ document.getElementById('upload-form').addEventListener('submit', async (e) => {
       err.className = 'alert';
       err.textContent = rec.error;
       card.appendChild(err);
-    }
-    if (rec.roadmap) {
-      const label = document.createElement('h4');
-      label.textContent = texts[currentLang].roadmap;
-      card.appendChild(label);
-      card.appendChild(createRoadmap(rec.roadmap));
-    }
-    if (rec.courses) {
-      const label = document.createElement('h4');
-      label.textContent = texts[currentLang].courses;
-      card.appendChild(label);
-      rec.courses.forEach(c => card.appendChild(createItem(c, 'course')));
-    }
-    if (rec.certifications) {
-      const label = document.createElement('h4');
-      label.textContent = texts[currentLang].certs;
-      card.appendChild(label);
-      rec.certifications.forEach(c => card.appendChild(createItem(c, 'cert')));
+    } else if (rec.roadmap) {
+      card.appendChild(createJourney(rec.roadmap, rec.courses || [], rec.certifications || []));
     }
     const btn = document.createElement('button');
     btn.className = 'secondary';
