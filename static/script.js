@@ -102,6 +102,12 @@ function stopProgress() {
   setTimeout(() => { bar.style.width = '0'; }, 300);
 }
 
+function parsePrice(val) {
+  if (!val) return 0;
+  const m = String(val).match(/([\d,.]+)/);
+  return m ? parseFloat(m[1].replace(/,/g, '')) || 0 : 0;
+}
+
 function createItem(item, type, highlight = false, stepIndex = 1) {
   if (!item || !item.name) return document.createElement('div');
   const div = document.createElement('div');
@@ -256,7 +262,7 @@ async function render(data) {
       } else if (rec.roadmap) {
         card.appendChild(createJourney(rec.roadmap, rec.courses || [], rec.certifications || []));
         const total = [...(rec.courses || []), ...(rec.certifications || [])]
-          .reduce((s, x) => s + (Number(x.price) || 0), 0);
+          .reduce((s, x) => s + parsePrice(x.price), 0);
         const totEl = document.createElement('div');
         totEl.className = 'total';
         totEl.textContent = `${texts[currentLang].totalCost}: ${total}`;

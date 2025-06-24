@@ -75,15 +75,29 @@ def choose_model() -> str:
     return env_model or "openai/gpt-3.5-turbo"
 
 
-def extract_first_json_block(text: str):
-    """Return the first JSON object found in text, or None."""
-    matches = re.findall(r"\{[\s\S]*?\}", text)
-    if matches:
+def extract_json_objects(text: str) -> list:
+    """Return a list of JSON objects found in a text string."""
+    objs = []
+    for m in re.findall(r"\{[\s\S]*?\}", text):
         try:
-            return json.loads(matches[0])
+            objs.append(json.loads(m))
         except json.JSONDecodeError:
-            return None
-    return None
+            continue
+    return objs
+
+
+def merge_json_results(objs: list) -> dict:
+    """Merge multiple recommendation JSON objects, avoiding duplicates."""
+    merged = {"certifications": [], "courses": [], "roadmap": []}
+    for obj in objs:
+        for key in ("certifications", "courses"):
+            for item in obj.get(key, []):
+                if item and item not in merged[key]:
+                    merged[key].append(item)
+        for step in obj.get("roadmap", []):
+            if step and step not in merged["roadmap"]:
+                merged["roadmap"].append(step)
+    return merged
 
 
 def generate_recommendations(employee: dict):
@@ -122,13 +136,15 @@ def generate_recommendations(employee: dict):
         logger.debug("OpenRouter raw response: %s", data)
         content = data.get("choices", [{}])[0].get("message", {}).get("content", "")
         logger.info("OpenRouter content for %s: %s", employee.get("name"), content)
-        parsed = extract_first_json_block(content)
-        if parsed:
-            return parsed
-        try:
-            return json.loads(content)
-        except Exception:
-            return {"raw": content}
+        objs = extract_json_objects(content)
+        if not objs:
+            try:
+                objs = [json.loads(content)]
+            except Exception:
+                return {"raw": content}
+        if len(objs) == 1:
+            return objs[0]
+        return merge_json_results(objs)
     except Exception as e:
         logger.error("Error from OpenRouter for %s: %s", employee.get("name"), e)
         return {"error": str(e)}
