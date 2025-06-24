@@ -28,11 +28,15 @@ def callback(ch, method, properties, body):
     result_id = task["id"]
     employee = task["employee"]
     logger.info("Processing %s", employee.get("name"))
-    rec = generate_recommendations(employee)
+    try:
+        rec = generate_recommendations(employee)
+    except Exception as exc:  # unexpected errors
+        logger.exception("Processing failed for %s", employee.get("name"))
+        rec = {"error": str(exc)}
     res = session.get(Result, result_id)
     if res:
         res.data = rec
-        res.status = "done"
+        res.status = "error" if rec.get("error") else "done"
         session.commit()
     ch.basic_ack(delivery_tag=method.delivery_tag)
 

@@ -7,6 +7,7 @@ const texts = {
   employees: 'عدد الموظفين',
   totalCost: 'إجمالي التكلفة',
   badge: 'مقترحة بشدة',
+  failed: '❌ فشل التحليل',
   langButton: 'English',
     dark: '🌙',
     light: '☀️',
@@ -22,6 +23,7 @@ const texts = {
   employees: 'Employees',
   totalCost: 'Total Cost',
   badge: 'Highly recommended',
+  failed: '❌ Analysis failed',
   langButton: 'عربي',
     dark: '🌙',
     light: '☀️',
@@ -251,6 +253,11 @@ async function render(data) {
     } else {
       const rec = item.recommendations || {};
       if (rec.error) {
+        card.classList.add('error');
+        const failed = document.createElement('div');
+        failed.className = 'error-title';
+        failed.textContent = texts[currentLang].failed;
+        card.appendChild(failed);
         const err = document.createElement('div');
         err.className = 'alert';
         err.textContent = rec.error;
@@ -292,7 +299,7 @@ async function poll(jobId, count) {
     const resp = await fetch(`/results?job=${jobId}`);
     const data = await resp.json();
     await render(data);
-    done = data.results.filter(r => r.status === 'done').length;
+    done = data.results.filter(r => r.status === 'done' || r.status === 'error').length;
     const progress = Math.round((done / count) * 100);
     document.getElementById('progress-bar').style.width = progress + '%';
     if (done < count) await new Promise(res => setTimeout(res, 3000));
