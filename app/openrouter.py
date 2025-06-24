@@ -76,13 +76,24 @@ def choose_model() -> str:
 
 
 def extract_json_objects(text: str) -> list:
-    """Return a list of JSON objects found in a text string."""
+    """Return all JSON objects found in the response text."""
     objs = []
-    for m in re.findall(r"\{[\s\S]*?\}", text):
-        try:
-            objs.append(json.loads(m))
-        except json.JSONDecodeError:
-            continue
+    stack = []
+    start = None
+    for i, ch in enumerate(text):
+        if ch == "{":
+            if not stack:
+                start = i
+            stack.append(ch)
+        elif ch == "}":
+            if stack:
+                stack.pop()
+                if not stack and start is not None:
+                    snippet = text[start : i + 1]
+                    try:
+                        objs.append(json.loads(snippet))
+                    except json.JSONDecodeError:
+                        pass
     return objs
 
 
