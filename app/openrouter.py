@@ -3,6 +3,7 @@ import json
 import logging
 import requests
 from functools import lru_cache
+import re
 
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
 OPENROUTER_URL = os.getenv(
@@ -18,14 +19,15 @@ logging.basicConfig(level=logging.INFO)
 PROMPT_TEMPLATE = (
     """You are an HR assistant. For the following employee data, recommend important\n"
     "certifications and courses that will improve the employee's career.\n"
-    "Provide the response in both Arabic and English. The output must be\n"
-    "structured as JSON with the following format. Mention the certification or\n"
-    "course names within the roadmap steps so they can be matched visually:\n"
+    "Provide the response in Arabic only. The output must be strictly one JSON object\n"
+    "with the following format. Mention the certification or course names within the\n"
+    "roadmap steps so they can be matched visually:\n"
     "{\n"
     "  \"certifications\": [ {\"name\":..., \"link\":..., \"price\":... } ],\n"
     "  \"courses\": [ {\"name\":..., \"link\":..., \"price\":... } ],\n"
     "  \"roadmap\": [ \"step 1 mentions PMP\", \"step 2 mentions course name\", ... ]\n"
-    "}\n"""
+    "}\n"
+    "Return only this JSON object and nothing else."""
 )
 
 
@@ -73,6 +75,17 @@ def choose_model() -> str:
     return env_model or "openai/gpt-3.5-turbo"
 
 
+def extract_first_json_block(text: str):
+    """Return the first JSON object found in text, or None."""
+    matches = re.findall(r"\{[\s\S]*?\}", text)
+    if matches:
+        try:
+            return json.loads(matches[0])
+        except json.JSONDecodeError:
+            return None
+    return None
+
+
 def generate_recommendations(employee: dict):
     if not OPENROUTER_API_KEY:
         return {
@@ -109,6 +122,9 @@ def generate_recommendations(employee: dict):
         logger.debug("OpenRouter raw response: %s", data)
         content = data.get("choices", [{}])[0].get("message", {}).get("content", "")
         logger.info("OpenRouter content for %s: %s", employee.get("name"), content)
+        parsed = extract_first_json_block(content)
+        if parsed:
+            return parsed
         try:
             return json.loads(content)
         except Exception:
