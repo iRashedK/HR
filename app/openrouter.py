@@ -19,11 +19,12 @@ PROMPT_TEMPLATE = (
     """You are an HR assistant. For the following employee data, recommend important\n"
     "certifications and courses that will improve the employee's career.\n"
     "Provide the response in both Arabic and English. The output must be\n"
-    "structured as JSON with the following format:\n"
+    "structured as JSON with the following format. Mention the certification or\n"
+    "course names within the roadmap steps so they can be matched visually:\n"
     "{\n"
     "  \"certifications\": [ {\"name\":..., \"link\":..., \"price\":... } ],\n"
     "  \"courses\": [ {\"name\":..., \"link\":..., \"price\":... } ],\n"
-    "  \"roadmap\": [ \"step 1\", \"step 2\", ... ]\n"
+    "  \"roadmap\": [ \"step 1 mentions PMP\", \"step 2 mentions course name\", ... ]\n"
     "}\n"""
 )
 

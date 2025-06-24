@@ -109,34 +109,56 @@ function createItem(item, type, highlight = false) {
 function createJourney(steps, courses, certs) {
   const container = document.createElement('div');
   container.className = 'journey';
-  const used = new Set();
   const first = steps[0] || '';
+  const remainingCourses = [...(courses || [])];
+  const remainingCerts = [...(certs || [])];
+
   steps.forEach((step, idx) => {
     const block = document.createElement('div');
     block.className = 'step';
+
     const num = document.createElement('div');
     num.className = 'step-number';
     num.textContent = idx + 1;
     block.appendChild(num);
+
     const desc = document.createElement('div');
     desc.textContent = step;
     block.appendChild(desc);
-    courses.forEach(c => {
-      if (!used.has(c.name) && step.includes(c.name)) {
-        block.appendChild(createItem(c, 'course', first.includes(c.name)));
-        used.add(c.name);
+
+    const stepLower = step.toLowerCase();
+
+    function takeMatches(list, type) {
+      let item;
+      for (let i = 0; i < list.length; i++) {
+        if (stepLower.includes(list[i].name.toLowerCase())) {
+          item = list.splice(i, 1)[0];
+          block.appendChild(createItem(item, type, first.includes(item.name)));
+          i--;
+        }
       }
-    });
-    certs.forEach(c => {
-      if (!used.has(c.name) && step.includes(c.name)) {
-        block.appendChild(createItem(c, 'cert', first.includes(c.name)));
-        used.add(c.name);
+    }
+
+    takeMatches(remainingCourses, 'course');
+    takeMatches(remainingCerts, 'cert');
+
+    if (!block.querySelector('.item')) {
+      if (remainingCourses.length) {
+        const item = remainingCourses.shift();
+        block.appendChild(createItem(item, 'course', first.includes(item.name)));
       }
-    });
+      if (remainingCerts.length) {
+        const item = remainingCerts.shift();
+        block.appendChild(createItem(item, 'cert', first.includes(item.name)));
+      }
+    }
+
     container.appendChild(block);
   });
-  courses.forEach(c => { if (!used.has(c.name)) container.appendChild(createItem(c, 'course', first.includes(c.name))); });
-  certs.forEach(c => { if (!used.has(c.name)) container.appendChild(createItem(c, 'cert', first.includes(c.name))); });
+
+  remainingCourses.forEach(c => container.appendChild(createItem(c, 'course', first.includes(c.name))));
+  remainingCerts.forEach(c => container.appendChild(createItem(c, 'cert', first.includes(c.name))));
+
   return container;
 }
 
