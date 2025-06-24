@@ -173,12 +173,20 @@ function createItem(item, type, highlight = false, stepIndex = 1) {
   return div;
 }
 
+function toArray(val) {
+  if (!val) return [];
+  return Array.isArray(val) ? val : [val];
+}
+
 function createJourney(steps, courses, certs) {
+  steps = toArray(steps);
+  courses = toArray(courses);
+  certs = toArray(certs);
   const container = document.createElement('div');
   container.className = 'journey';
   const first = steps[0] || '';
-  const remainingCourses = [...(courses || [])];
-  const remainingCerts = [...(certs || [])];
+  const remainingCourses = [...courses];
+  const remainingCerts = [...certs];
 
   steps.forEach((step, idx) => {
     const block = document.createElement('div');
@@ -248,7 +256,10 @@ async function render(data) {
       wait.textContent = texts[currentLang].loading;
       card.appendChild(wait);
     } else {
-      const rec = item.recommendations || {};
+      let rec = item.recommendations || {};
+      if (typeof rec === 'string') {
+        try { rec = JSON.parse(rec); } catch (e) { rec = { raw: rec }; }
+      }
       if (rec.error) {
         card.classList.add('error');
         const failed = document.createElement('div');
@@ -259,8 +270,8 @@ async function render(data) {
         err.className = 'alert';
         err.textContent = rec.error;
         card.appendChild(err);
-      } else if (rec.roadmap) {
-        card.appendChild(createJourney(rec.roadmap, rec.courses || [], rec.certifications || []));
+      } else {
+        card.appendChild(createJourney(rec.roadmap || [], rec.courses || [], rec.certifications || []));
         const total = [...(rec.courses || []), ...(rec.certifications || [])]
           .reduce((s, x) => s + parsePrice(x.price), 0);
         const totEl = document.createElement('div');
