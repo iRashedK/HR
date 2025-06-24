@@ -4,7 +4,7 @@ import logging
 import pika
 from sqlalchemy.orm import Session
 from .openrouter import generate_recommendations
-from .db import SessionLocal, init_db
+from .db import SessionLocal, wait_for_db
 from .utils import wait_for_rabbitmq
 from .models import Result
 
@@ -13,8 +13,7 @@ logger = logging.getLogger(__name__)
 
 RABBITMQ_URL = os.getenv("RABBITMQ_URL", "amqp://guest:guest@rabbitmq:5672/")
 
-init_db()
-
+wait_for_db()
 wait_for_rabbitmq()
 
 connection = pika.BlockingConnection(pika.URLParameters(RABBITMQ_URL))
