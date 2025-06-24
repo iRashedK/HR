@@ -10,20 +10,6 @@
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body class="light">
-    <aside class="sidebar">
-        <h2 class="logo">رشُد</h2>
-        <h3 class="menu-title">قائمة التنقل</h3>
-        <nav>
-            <ul>
-                <li><a href="/"><i class="fas fa-home"></i> الرئيسية</a></li>
-                <li><a href="/dashboard"><i class="fas fa-chart-bar"></i> لوحة القيادة</a></li>
-                <li><a href="#results"><i class="fas fa-route"></i> خطة التدريب</a></li>
-                <li><a href="/library"><i class="fas fa-book"></i> مكتبة الدورات</a></li>
-                <li><a href="#settings"><i class="fas fa-cog"></i> الإعدادات</a></li>
-                <li><a href="#help"><i class="fas fa-question-circle"></i> الدعم والمساعدة</a></li>
-            </ul>
-        </nav>
-    </aside>
     <div id="overlay" class="overlay hidden">
         <div class="spinner"></div>
         <div class="progress"><div id="progress-bar" class="bar"></div></div>
@@ -40,12 +26,14 @@
             <button id="mode-toggle" class="secondary">🌙</button>
         </div>
     </header>
+    <div class="placeholder card">رشُد</div>
     <form id="upload-form" class="upload" enctype="multipart/form-data">
         <div id="dropzone" class="dropzone">
+            <div class="icon-circle"><i class="fas fa-upload"></i></div>
             <p id="drop-text">اسحب الملف هنا أو اضغط لاختياره</p>
             <input type="file" name="file" id="file" accept=".csv,.xlsx" hidden required>
+            <button id="upload-btn" type="submit">Upload</button>
         </div>
-        <button id="upload-btn" type="submit">Upload</button>
     </form>
     <div id="file-info" class="file-info"></div>
     <div id="alert" class="alert hidden"></div>

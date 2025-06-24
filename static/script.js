@@ -103,10 +103,10 @@ function stopProgress() {
   setTimeout(() => { bar.style.width = '0'; }, 300);
 }
 
-function createItem(item, type, highlight = false) {
+function createItem(item, type, highlight = false, stepIndex = 1) {
   if (!item || !item.name) return document.createElement('div');
   const div = document.createElement('div');
-  div.className = `item ${type}`;
+  div.className = `item ${type} step-${stepIndex}`;
 
   const header = document.createElement('div');
   header.className = 'item-header';
@@ -152,15 +152,12 @@ function createItem(item, type, highlight = false) {
   link.textContent = texts[currentLang].visit;
   link.target = '_blank';
   body.appendChild(link);
-  if (item.link) {
-    const copy = document.createElement('button');
-    copy.type = 'button';
-    copy.className = 'copy-btn';
-    copy.textContent = '📋';
-    copy.onclick = () => navigator.clipboard.writeText(item.link);
-    body.appendChild(copy);
-  }
   div.appendChild(body);
+
+  const badge = document.createElement('div');
+  badge.className = 'step-number';
+  badge.textContent = stepIndex;
+  div.appendChild(badge);
 
   if (highlight) {
     const b = document.createElement('span');
@@ -181,12 +178,6 @@ function createJourney(steps, courses, certs) {
   steps.forEach((step, idx) => {
     const block = document.createElement('div');
     block.className = 'step';
-
-    const num = document.createElement('div');
-    num.className = 'step-number';
-    num.textContent = idx + 1;
-    block.appendChild(num);
-
     const desc = document.createElement('div');
     desc.textContent = step;
     block.appendChild(desc);
@@ -198,7 +189,7 @@ function createJourney(steps, courses, certs) {
       for (let i = 0; i < list.length; i++) {
         if (stepLower.includes(list[i].name.toLowerCase())) {
           item = list.splice(i, 1)[0];
-          block.appendChild(createItem(item, type, first.includes(item.name)));
+          block.appendChild(createItem(item, type, first.includes(item.name), idx + 1));
           i--;
         }
       }
@@ -210,18 +201,19 @@ function createJourney(steps, courses, certs) {
     if (!block.querySelector('.item')) {
       if (remainingCourses.length) {
         const item = remainingCourses.shift();
-        block.appendChild(createItem(item, 'course', first.includes(item.name)));
+        block.appendChild(createItem(item, 'course', first.includes(item.name), idx + 1));
       } else if (remainingCerts.length) {
         const item = remainingCerts.shift();
-        block.appendChild(createItem(item, 'cert', first.includes(item.name)));
+        block.appendChild(createItem(item, 'cert', first.includes(item.name), idx + 1));
       }
     }
 
     container.appendChild(block);
   });
 
-  remainingCourses.forEach(c => container.appendChild(createItem(c, 'course', first.includes(c.name))));
-  remainingCerts.forEach(c => container.appendChild(createItem(c, 'cert', first.includes(c.name))));
+  const extraStep = steps.length + 1;
+  remainingCourses.forEach(c => container.appendChild(createItem(c, 'course', first.includes(c.name), extraStep)));
+  remainingCerts.forEach(c => container.appendChild(createItem(c, 'cert', first.includes(c.name), extraStep)));
 
   return container;
 }
