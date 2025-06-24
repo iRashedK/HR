@@ -132,7 +132,11 @@ def generate_recommendations(employee: dict):
             logger.error("OpenRouter returned %s: %s", resp.status_code, err)
             return {"error": err}
 
-        data = resp.json()
+        try:
+            data = resp.json()
+        except ValueError:
+            logger.error("Invalid JSON from OpenRouter: %s", resp.text)
+            return {"error": resp.text.strip()}
         logger.debug("OpenRouter raw response: %s", data)
         content = data.get("choices", [{}])[0].get("message", {}).get("content", "")
         logger.info("OpenRouter content for %s: %s", employee.get("name"), content)
