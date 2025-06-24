@@ -7,7 +7,7 @@ from fastapi import FastAPI, UploadFile, File, Query
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
-from app.utils import parse_file
+from app.utils import parse_file, wait_for_rabbitmq
 from app.db import SessionLocal, init_db
 from app.models import Result
 
@@ -17,6 +17,8 @@ logger = logging.getLogger(__name__)
 RABBITMQ_URL = os.getenv("RABBITMQ_URL", "amqp://guest:guest@rabbitmq:5672/")
 
 init_db()
+
+wait_for_rabbitmq()
 
 connection = pika.BlockingConnection(pika.URLParameters(RABBITMQ_URL))
 channel = connection.channel()

@@ -1,4 +1,8 @@
+import os
+import time
+import logging
 import pandas as pd
+import pika
 from fastapi import UploadFile
 
 
@@ -13,3 +17,21 @@ def parse_file(file: UploadFile):
     df.columns = [c.lower().strip().replace(' ', '_') for c in df.columns]
     employees = df.to_dict(orient='records')
     return employees
+
+
+RABBITMQ_URL = os.getenv("RABBITMQ_URL", "amqp://guest:guest@rabbitmq:5672/")
+
+
+def wait_for_rabbitmq(max_tries: int = 10, delay: int = 3) -> None:
+    """Block until RabbitMQ connection is available."""
+    for i in range(max_tries):
+        try:
+            conn = pika.BlockingConnection(pika.URLParameters(RABBITMQ_URL))
+            conn.close()
+            return
+        except pika.exceptions.AMQPConnectionError:
+            logging.info(
+                "RabbitMQ not ready, retrying (%s/%s)...", i + 1, max_tries
+            )
+            time.sleep(delay)
+    raise RuntimeError("RabbitMQ connection failed")
