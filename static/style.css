@@ -32,6 +32,25 @@ body {
   padding: 1rem;
 }
 
+.dropzone {
+  border: 2px dashed var(--accent);
+  border-radius: 1rem;
+  padding: 2rem;
+  text-align: center;
+  cursor: pointer;
+  transition: background 0.3s, box-shadow 0.3s;
+}
+
+.dropzone.over {
+  background: rgba(75, 107, 251, 0.1);
+  box-shadow: 0 0 10px var(--accent);
+}
+
+.file-info {
+  margin: 0.5rem 0 1rem;
+  font-style: italic;
+}
+
 .header {
   display: flex;
   justify-content: space-between;
@@ -103,6 +122,8 @@ button.secondary {
   padding: 1rem;
   box-shadow: 0 4px 8px rgba(0,0,0,0.1);
   transition: transform 0.3s, box-shadow 0.3s;
+  opacity: 0;
+  animation: fadeIn 0.6s forwards;
 }
 
 .card:hover {
@@ -151,6 +172,21 @@ button.secondary {
   text-decoration: none;
 }
 
+.total {
+  margin-top: 1rem;
+  font-weight: bold;
+  text-align: end;
+}
+
+.badge {
+  background: var(--accent);
+  color: #fff;
+  padding: 0 .5rem;
+  border-radius: .25rem;
+  margin-left: .5rem;
+  font-size: .75rem;
+}
+
 .overlay {
   position: fixed;
   inset: 0;
@@ -160,6 +196,33 @@ button.secondary {
   justify-content: center;
   align-items: center;
   z-index: 100;
+}
+
+.progress {
+  width: 80%;
+  height: 8px;
+  background: var(--bg2);
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 0.5rem 0;
+}
+
+.progress .bar {
+  width: 0;
+  height: 100%;
+  background: var(--accent);
+  animation: prog 2s infinite;
+}
+
+@keyframes prog {
+  0% { width: 0; }
+  50% { width: 70%; }
+  100% { width: 0; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .overlay.hidden { display: none; }

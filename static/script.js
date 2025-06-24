@@ -2,8 +2,12 @@ const texts = {
   ar: {
     title: 'رشُد',
     subtitle: 'منصة الذكاء الاصطناعي لإرشاد الموظفين نحو التطور المهني',
-    uploadBtn: 'رفع',
-    langButton: 'English',
+  uploadBtn: 'رفع',
+  drop: 'اسحب الملف هنا أو اضغط لاختياره',
+  employees: 'عدد الموظفين',
+  totalCost: 'إجمالي التكلفة',
+  badge: 'مقترحة بشدة',
+  langButton: 'English',
     dark: '🌙',
     light: '☀️',
     visit: 'زيارة الرابط',
@@ -13,8 +17,12 @@ const texts = {
   en: {
     title: 'Rushed',
     subtitle: 'AI platform guiding employees to professional growth',
-    uploadBtn: 'Upload',
-    langButton: 'عربي',
+  uploadBtn: 'Upload',
+  drop: 'Drag file here or click to choose',
+  employees: 'Employees',
+  totalCost: 'Total Cost',
+  badge: 'Highly recommended',
+  langButton: 'عربي',
     dark: '🌙',
     light: '☀️',
     visit: 'Visit Link',
@@ -25,12 +33,14 @@ const texts = {
 
 let currentLang = 'ar';
 let dark = false;
+let selectedFile = null;
 
 function updateTexts() {
   const t = texts[currentLang];
   document.getElementById('title').textContent = t.title;
   document.getElementById('subtitle').textContent = t.subtitle;
   document.getElementById('upload-btn').textContent = t.uploadBtn;
+  document.getElementById('drop-text').textContent = t.drop;
   document.getElementById('lang-toggle').textContent = t.langButton;
   document.getElementById('mode-toggle').textContent = dark ? t.light : t.dark;
   document.getElementById('loading-text').textContent = t.loading;
@@ -48,9 +58,32 @@ document.getElementById('mode-toggle').onclick = () => {
   updateTexts();
 };
 
+const dropzone = document.getElementById('dropzone');
+const fileInput = document.getElementById('file');
+const fileInfo = document.getElementById('file-info');
+
+dropzone.addEventListener('click', () => fileInput.click());
+dropzone.addEventListener('dragover', e => { e.preventDefault(); dropzone.classList.add('over'); });
+dropzone.addEventListener('dragleave', () => dropzone.classList.remove('over'));
+dropzone.addEventListener('drop', e => {
+  e.preventDefault();
+  dropzone.classList.remove('over');
+  if (e.dataTransfer.files.length) {
+    selectedFile = e.dataTransfer.files[0];
+    fileInfo.textContent = selectedFile.name;
+  }
+});
+
+fileInput.addEventListener('change', () => {
+  if (fileInput.files.length) {
+    selectedFile = fileInput.files[0];
+    fileInfo.textContent = selectedFile.name;
+  }
+});
+
 updateTexts();
 
-function createItem(item, type) {
+function createItem(item, type, highlight = false) {
   const div = document.createElement('div');
   div.className = `item ${type}`;
   const icon = document.createElement('span');
@@ -64,6 +97,12 @@ function createItem(item, type) {
   div.appendChild(icon);
   div.appendChild(txt);
   div.appendChild(link);
+  if (highlight) {
+    const b = document.createElement('span');
+    b.className = 'badge';
+    b.textContent = texts[currentLang].badge;
+    div.appendChild(b);
+  }
   return div;
 }
 
@@ -71,6 +110,7 @@ function createJourney(steps, courses, certs) {
   const container = document.createElement('div');
   container.className = 'journey';
   const used = new Set();
+  const first = steps[0] || '';
   steps.forEach((step, idx) => {
     const block = document.createElement('div');
     block.className = 'step';
@@ -83,20 +123,20 @@ function createJourney(steps, courses, certs) {
     block.appendChild(desc);
     courses.forEach(c => {
       if (!used.has(c.name) && step.includes(c.name)) {
-        block.appendChild(createItem(c, 'course'));
+        block.appendChild(createItem(c, 'course', first.includes(c.name)));
         used.add(c.name);
       }
     });
     certs.forEach(c => {
       if (!used.has(c.name) && step.includes(c.name)) {
-        block.appendChild(createItem(c, 'cert'));
+        block.appendChild(createItem(c, 'cert', first.includes(c.name)));
         used.add(c.name);
       }
     });
     container.appendChild(block);
   });
-  courses.forEach(c => { if (!used.has(c.name)) container.appendChild(createItem(c, 'course')); });
-  certs.forEach(c => { if (!used.has(c.name)) container.appendChild(createItem(c, 'cert')); });
+  courses.forEach(c => { if (!used.has(c.name)) container.appendChild(createItem(c, 'course', first.includes(c.name))); });
+  certs.forEach(c => { if (!used.has(c.name)) container.appendChild(createItem(c, 'cert', first.includes(c.name))); });
   return container;
 }
 
@@ -111,10 +151,9 @@ function printCard(card, name) {
 
 document.getElementById('upload-form').addEventListener('submit', async (e) => {
   e.preventDefault();
-  const fileInput = document.getElementById('file');
-  if (!fileInput.files.length) return;
+  if (!selectedFile) return;
   const formData = new FormData();
-  formData.append('file', fileInput.files[0]);
+  formData.append('file', selectedFile);
   document.getElementById('overlay').classList.remove('hidden');
   document.getElementById('alert').classList.add('hidden');
   let data;
@@ -131,6 +170,7 @@ document.getElementById('upload-form').addEventListener('submit', async (e) => {
   }
   const resultsDiv = document.getElementById('results');
   resultsDiv.innerHTML = '';
+  fileInfo.textContent = `${selectedFile.name} - ${data.results.length} ${texts[currentLang].employees}`;
   data.results.forEach(item => {
     const card = document.createElement('div');
     card.className = 'card';
@@ -145,6 +185,12 @@ document.getElementById('upload-form').addEventListener('submit', async (e) => {
       card.appendChild(err);
     } else if (rec.roadmap) {
       card.appendChild(createJourney(rec.roadmap, rec.courses || [], rec.certifications || []));
+      const total = [...(rec.courses || []), ...(rec.certifications || [])]
+        .reduce((s, x) => s + (Number(x.price) || 0), 0);
+      const totEl = document.createElement('div');
+      totEl.className = 'total';
+      totEl.textContent = `${texts[currentLang].totalCost}: ${total}`;
+      card.appendChild(totEl);
     }
     const btn = document.createElement('button');
     btn.className = 'secondary';
@@ -154,4 +200,5 @@ document.getElementById('upload-form').addEventListener('submit', async (e) => {
     resultsDiv.appendChild(card);
   });
   document.getElementById('overlay').classList.add('hidden');
+  selectedFile = null;
 });
