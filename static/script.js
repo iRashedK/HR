@@ -102,15 +102,38 @@ function stopProgress() {
   setTimeout(() => { bar.style.width = '0'; }, 300);
 }
 
+function normalizeDigits(str) {
+  return String(str ?? '').replace(/[\u0660-\u0669]/g, d => '0123456789'[d.charCodeAt(0) - 0x0660]);
+}
+
 function parsePrice(val) {
-  const m = String(val ?? '').match(/([\d,.]+)/);
+  const clean = normalizeDigits(val);
+  const m = clean.match(/([\d,.]+)/);
   return m ? parseFloat(m[1].replace(/,/g, '')) || 0 : 0;
 }
 
-function createItem(item, type, highlight = false, stepIndex = 1) {
+function localizeStepText(text) {
+  if (!text) return '';
+  const arMatch = text.match(/الخطوة\s*(\d+)/);
+  const enMatch = text.match(/step\s*(\d+)/i);
+  const num = arMatch ? arMatch[1] : enMatch ? enMatch[1] : '';
+  if (currentLang === 'ar') {
+    return num ? `الخطوة ${num}` : text;
+  }
+  return num ? `Step ${num}` : text;
+}
+
+function createItem(item, type, highlight = false, stepIndex = 1, stepText = '') {
   if (!item || !item.name) return document.createElement('div');
   const div = document.createElement('div');
   div.className = `item ${type} step-${stepIndex}`;
+
+  if (stepText) {
+    const s = document.createElement('div');
+    s.className = 'step-desc';
+    s.textContent = stepText;
+    div.appendChild(s);
+  }
 
   const header = document.createElement('div');
   header.className = 'item-header';
@@ -146,18 +169,18 @@ function createItem(item, type, highlight = false, stepIndex = 1) {
   body.appendChild(link);
   div.appendChild(body);
 
-  if (item.price) {
-    const priceTag = document.createElement('span');
-    priceTag.className = 'price-tag tooltip';
-    priceTag.textContent = `💸 ${item.price}`;
-    if (String(item.price).length > 6) {
-      const tip = document.createElement('span');
-      tip.className = 'tip';
-      tip.textContent = item.price;
-      priceTag.appendChild(tip);
-    }
-    div.appendChild(priceTag);
+  const priceTag = document.createElement('span');
+  priceTag.className = 'price-tag tooltip';
+  const priceVal = parsePrice(item.price);
+  const displayPrice = priceVal ? item.price : (currentLang === 'ar' ? 'غير متوفر' : 'N/A');
+  priceTag.textContent = `💸 ${displayPrice}`;
+  if (String(displayPrice).length > 6) {
+    const tip = document.createElement('span');
+    tip.className = 'tip';
+    tip.textContent = displayPrice;
+    priceTag.appendChild(tip);
   }
+  div.appendChild(priceTag);
 
   const badge = document.createElement('div');
   badge.className = 'step-number';
@@ -191,8 +214,10 @@ function createJourney(steps, courses, certs) {
   steps.forEach((step, idx) => {
     const block = document.createElement('div');
     block.className = 'step';
+    const stepText = localizeStepText(step);
     const desc = document.createElement('div');
-    desc.textContent = step;
+    desc.className = 'step-desc-main';
+    desc.textContent = stepText;
     block.appendChild(desc);
 
     const stepLower = step.toLowerCase();
@@ -202,7 +227,7 @@ function createJourney(steps, courses, certs) {
       for (let i = 0; i < list.length; i++) {
         if (stepLower.includes(list[i].name.toLowerCase())) {
           item = list.splice(i, 1)[0];
-          block.appendChild(createItem(item, type, first.includes(item.name), idx + 1));
+          block.appendChild(createItem(item, type, first.includes(item.name), idx + 1, stepText));
           i--;
         }
       }
@@ -214,10 +239,10 @@ function createJourney(steps, courses, certs) {
     if (!block.querySelector('.item')) {
       if (remainingCourses.length) {
         const item = remainingCourses.shift();
-        block.appendChild(createItem(item, 'course', first.includes(item.name), idx + 1));
+        block.appendChild(createItem(item, 'course', first.includes(item.name), idx + 1, stepText));
       } else if (remainingCerts.length) {
         const item = remainingCerts.shift();
-        block.appendChild(createItem(item, 'cert', first.includes(item.name), idx + 1));
+        block.appendChild(createItem(item, 'cert', first.includes(item.name), idx + 1, stepText));
       }
     }
 
@@ -272,11 +297,12 @@ async function render(data) {
         card.appendChild(err);
       } else {
         card.appendChild(createJourney(rec.roadmap || [], rec.courses || [], rec.certifications || []));
-        const total = [...(rec.courses || []), ...(rec.certifications || [])]
-          .reduce((s, x) => s + parsePrice(x.price), 0);
+        const items = [...(rec.courses || []), ...(rec.certifications || [])];
+        const total = items.reduce((s, x) => s + parsePrice(x.price), 0);
         const totEl = document.createElement('div');
         totEl.className = 'total';
-        totEl.textContent = `${texts[currentLang].totalCost}: ${total}`;
+        const totalText = total > 0 ? total : (currentLang === 'ar' ? 'غير متوفر' : 'N/A');
+        totEl.textContent = `${texts[currentLang].totalCost}: ${totalText}`;
         card.appendChild(totEl);
         const budget = 2000;
         const progress = document.createElement('div');

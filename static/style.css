@@ -45,6 +45,8 @@ body {
   flex-direction: column;
   align-items: center;
   gap: 1rem;
+  background: linear-gradient(135deg, var(--card-bg), var(--bg1));
+  box-shadow: 0 4px 8px rgba(0,0,0,0.05);
 }
 
 .dropzone.over {
@@ -54,14 +56,14 @@ body {
 }
 
 .icon-circle {
-  width: 60px;
-  height: 60px;
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
   border: 2px dashed var(--accent);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.5rem;
+  font-size: 2rem;
   color: var(--accent);
 }
 
@@ -196,6 +198,18 @@ button.secondary {
 }
 
 .step {
+  margin-bottom: 0.5rem;
+}
+
+.step-desc-main {
+  text-align: center;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.step-desc {
+  text-align: center;
+  font-weight: 500;
   margin-bottom: 0.25rem;
 }
 
