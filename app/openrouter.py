@@ -19,9 +19,10 @@ logging.basicConfig(level=logging.INFO)
 PROMPT_TEMPLATE = (
     """You are an HR assistant. For the following employee data, recommend important\n"
     "certifications and courses that will improve the employee's career.\n"
+    "Return at least five certifications and five courses.\n"
     "Provide the response in Arabic only. The output must be strictly one JSON object\n"
     "with the following format. Mention the certification or course names within the\n"
-    "roadmap steps so they can be matched visually:\n"
+    "roadmap steps so they can be matched visually so our UI can sort them:\n"
     "{\n"
     "  \"certifications\": [ {\"name\":..., \"link\":..., \"price\":... } ],\n"
     "  \"courses\": [ {\"name\":..., \"link\":..., \"price\":... } ],\n"
@@ -159,9 +160,9 @@ def generate_recommendations(employee: dict):
                 pass
         if not objs:
             return {"raw": content}
-        if len(objs) == 1:
-            return objs[0]
-        return merge_json_results(objs)
+        result = objs[0] if len(objs) == 1 else merge_json_results(objs)
+        logger.info("Parsed recommendations for %s: %s", employee.get("name"), json.dumps(result, ensure_ascii=False))
+        return result
     except Exception as e:
         logger.error("Error from OpenRouter for %s: %s", employee.get("name"), e)
         return {"error": str(e)}
