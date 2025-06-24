@@ -20,9 +20,10 @@ def parse_file(file: UploadFile):
 
 
 RABBITMQ_URL = os.getenv("RABBITMQ_URL", "amqp://guest:guest@rabbitmq:5672/")
+RABBITMQ_MAX_TRIES = int(os.getenv("RABBITMQ_MAX_TRIES", "20"))
 
 
-def wait_for_rabbitmq(max_tries: int = 10, delay: int = 3) -> None:
+def wait_for_rabbitmq(max_tries: int = RABBITMQ_MAX_TRIES, delay: int = 3) -> None:
     """Block until RabbitMQ connection is available."""
     for i in range(max_tries):
         try:
