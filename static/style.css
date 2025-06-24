@@ -1,13 +1,160 @@
+:root {
+  --bg: #f6f7f9;
+  --text: #222;
+  --accent: #4b6bfb;
+  --card-bg: #fff;
+  --cert-bg: #eef5ff;
+  --course-bg: #f0f8f0;
+}
+
+body.dark {
+  --bg: #1f1f27;
+  --text: #eee;
+  --card-bg: #282c34;
+  --cert-bg: #2a3448;
+  --course-bg: #243030;
+}
+
 body {
-    transition: background-color 0.3s, color 0.3s;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  transition: background 0.3s, color 0.3s;
 }
 
-.card-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1rem;
 }
 
-#loading {
-    z-index: 1050;
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.actions button {
+  margin-left: .5rem;
+}
+
+.upload {
+  display: flex;
+  gap: .5rem;
+  margin-bottom: 1rem;
+}
+
+button {
+  padding: .5rem 1rem;
+  border-radius: .75rem;
+  border: none;
+  background: var(--accent);
+  color: #fff;
+  cursor: pointer;
+}
+
+button.secondary {
+  background: transparent;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+}
+
+.alert {
+  background: #ffdede;
+  color: #900;
+  padding: .5rem 1rem;
+  border-radius: .5rem;
+  margin-bottom: 1rem;
+}
+
+.alert.hidden {
+  display: none;
+}
+
+.results {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.card {
+  background: var(--card-bg);
+  border-radius: 1rem;
+  padding: 1rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: .5rem 1rem;
+  border-radius: .5rem;
+  margin-bottom: .5rem;
+}
+
+.item.cert {
+  background: var(--cert-bg);
+}
+
+.item.course {
+  background: var(--course-bg);
+}
+
+.item a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.roadmap-step {
+  display: flex;
+  align-items: center;
+  margin-bottom: .5rem;
+}
+
+.roadmap-step-number {
+  font-weight: bold;
+  margin-right: .5rem;
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+}
+
+.overlay.hidden {
+  display: none;
+}
+
+.spinner {
+  border: 4px solid #ccc;
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin-bottom: .5rem;
+}
+
+@keyframes spin {
+  from { transform: rotate(0); }
+  to { transform: rotate(360deg); }
+}
+
+@media (max-width: 600px) {
+  .upload {
+    flex-direction: column;
+  }
+  .actions button {
+    margin-left: 0;
+    margin-right: .5rem;
+  }
 }
