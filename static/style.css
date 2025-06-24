@@ -4,8 +4,8 @@
   --text: #222;
   --accent: #4b6bfb;
   --card-bg: rgba(255,255,255,0.9);
-  --cert-bg: #eef5ff;
-  --course-bg: #f0f8f0;
+  --cert-bg: #eaf0f6;
+  --course-bg: #e5f9e7;
 }
 
 body.dark {
@@ -26,10 +26,32 @@ body {
   min-height: 100vh;
 }
 
-.container {
-  max-width: 900px;
-  margin: 0 auto;
+.sidebar {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 180px;
   padding: 1rem;
+  background: var(--card-bg);
+  box-shadow: 2px 0 8px rgba(0,0,0,0.1);
+}
+.sidebar ul { list-style: none; padding: 0; }
+.sidebar li { margin-bottom: .75rem; }
+.sidebar a { color: var(--text); text-decoration: none; font-weight: bold; }
+.sidebar a:hover { color: var(--accent); }
+.main {
+  margin-left: 200px;
+  padding: 1rem;
+  max-width: 900px;
+}
+html[dir="rtl"] .sidebar {
+  right: 0;
+  left: auto;
+}
+html[dir="rtl"] .main {
+  margin-left: 0;
+  margin-right: 200px;
 }
 
 .dropzone {
@@ -108,6 +130,16 @@ button.secondary {
 
 .alert.hidden {
   display: none;
+}
+
+.filters {
+  display: flex;
+  gap: .5rem;
+  margin-bottom: 1rem;
+}
+.filters select {
+  padding: .4rem;
+  border-radius: .5rem;
 }
 
 .results {
@@ -208,6 +240,50 @@ button.secondary {
   margin-left: .5rem;
   font-size: .75rem;
 }
+.price-badge {
+  background: #ffd466;
+  color: #000;
+  margin-left: .25rem;
+}
+.copy-btn {
+  background: transparent;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  padding: .25rem .5rem;
+  margin-left: .25rem;
+}
+.copy-btn:hover { background: var(--accent); color: #fff; }
+.tooltip {
+  position: relative;
+  cursor: help;
+}
+.tooltip .tip {
+  display: none;
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  background: var(--text);
+  color: #fff;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: .75rem;
+  z-index: 10;
+}
+.tooltip:hover .tip { display: block; }
+.budget {
+  background: var(--bg2);
+  border-radius: 4px;
+  height: 8px;
+  overflow: hidden;
+  margin-top: .5rem;
+}
+.budget .bar {
+  height: 100%;
+  background: var(--accent);
+  width: 0;
+}
 
 .overlay {
   position: fixed;
@@ -233,13 +309,7 @@ button.secondary {
   width: 0;
   height: 100%;
   background: var(--accent);
-  animation: prog 2s infinite;
-}
-
-@keyframes prog {
-  0% { width: 0; }
-  50% { width: 70%; }
-  100% { width: 0; }
+  transition: width 0.3s;
 }
 
 @keyframes fadeIn {

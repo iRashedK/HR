@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>مكتبة الدورات - رشُد</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body class="light">
+    <aside class="sidebar">
+        <h2 class="logo">رشُد</h2>
+        <nav>
+            <ul>
+                <li><a href="/">الرئيسية</a></li>
+                <li><a href="/library">مكتبة الدورات</a></li>
+            </ul>
+        </nav>
+    </aside>
+    <div class="main">
+        <header class="header">
+            <div class="titles">
+                <h1 id="title">مكتبة الدورات</h1>
+            </div>
+            <div class="actions">
+                <button id="lang-toggle" class="secondary">English</button>
+                <button id="mode-toggle" class="secondary">🌙</button>
+            </div>
+        </header>
+        <div class="filters">
+            <select id="type-filter">
+                <option value="all">الكل</option>
+                <option value="course">دورات</option>
+                <option value="cert">شهادات</option>
+            </select>
+            <select id="price-filter">
+                <option value="all">الكل</option>
+                <option value="free">مجانية</option>
+                <option value="paid">مدفوعة</option>
+            </select>
+        </div>
+        <div id="catalog" class="results"></div>
+    </div>
+    <script src="/static/library.js"></script>
+</body>
+</html>

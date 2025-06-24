@@ -34,6 +34,7 @@ const texts = {
 let currentLang = 'ar';
 let dark = false;
 let selectedFile = null;
+let progressInterval;
 
 function updateTexts() {
   const t = texts[currentLang];
@@ -83,6 +84,23 @@ fileInput.addEventListener('change', () => {
 
 updateTexts();
 
+function startProgress() {
+  const bar = document.getElementById('progress-bar');
+  let val = 0;
+  bar.style.width = '0';
+  progressInterval = setInterval(() => {
+    val = Math.min(90, val + 1);
+    bar.style.width = val + '%';
+  }, 100);
+}
+
+function stopProgress() {
+  const bar = document.getElementById('progress-bar');
+  clearInterval(progressInterval);
+  bar.style.width = '100%';
+  setTimeout(() => { bar.style.width = '0'; }, 300);
+}
+
 function createItem(item, type, highlight = false) {
   const div = document.createElement('div');
   div.className = `item ${type}`;
@@ -93,26 +111,40 @@ function createItem(item, type, highlight = false) {
   icon.className = 'item-icon';
   icon.textContent = type === 'cert' ? '🎓' : '📘';
   const title = document.createElement('span');
-  title.className = 'item-title';
+  title.className = 'item-title tooltip';
   title.textContent = item.name;
+  if (item.desc) {
+    const tip = document.createElement('span');
+    tip.className = 'tip';
+    tip.textContent = item.desc;
+    title.appendChild(tip);
+  }
   header.appendChild(icon);
   header.appendChild(title);
+  if (item.price) {
+    const priceBadge = document.createElement('span');
+    priceBadge.className = 'badge price-badge';
+    priceBadge.textContent = `💸${item.price}`;
+    header.appendChild(priceBadge);
+  }
   div.appendChild(header);
 
   const body = document.createElement('div');
   body.className = 'item-body';
-  if (item.price) {
-    const price = document.createElement('span');
-    price.className = 'price';
-    price.textContent = `\uD83D\uDCB8 ${item.price}`; // 💸
-    body.appendChild(price);
-  }
   const link = document.createElement('a');
   link.href = item.link || '#';
   link.className = 'link-btn';
   link.textContent = texts[currentLang].visit;
   link.target = '_blank';
   body.appendChild(link);
+  if (item.link) {
+    const copy = document.createElement('button');
+    copy.type = 'button';
+    copy.className = 'copy-btn';
+    copy.textContent = '📋';
+    copy.onclick = () => navigator.clipboard.writeText(item.link);
+    body.appendChild(copy);
+  }
   div.appendChild(body);
 
   if (highlight) {
@@ -195,6 +227,7 @@ document.getElementById('upload-form').addEventListener('submit', async (e) => {
   const formData = new FormData();
   formData.append('file', selectedFile);
   document.getElementById('overlay').classList.remove('hidden');
+  startProgress();
   document.getElementById('alert').classList.add('hidden');
   let data;
   try {
@@ -206,6 +239,7 @@ document.getElementById('upload-form').addEventListener('submit', async (e) => {
     alert.textContent = err.message;
     alert.classList.remove('hidden');
     document.getElementById('overlay').classList.add('hidden');
+    stopProgress();
     return;
   }
   const resultsDiv = document.getElementById('results');
@@ -231,6 +265,14 @@ document.getElementById('upload-form').addEventListener('submit', async (e) => {
       totEl.className = 'total';
       totEl.textContent = `${texts[currentLang].totalCost}: ${total}`;
       card.appendChild(totEl);
+      const budget = 2000;
+      const progress = document.createElement('div');
+      progress.className = 'budget';
+      const bar = document.createElement('div');
+      bar.className = 'bar';
+      bar.style.width = Math.min(100, (total / budget) * 100) + '%';
+      progress.appendChild(bar);
+      card.appendChild(progress);
     }
     const btn = document.createElement('button');
     btn.className = 'secondary';
@@ -239,6 +281,15 @@ document.getElementById('upload-form').addEventListener('submit', async (e) => {
     card.appendChild(btn);
     resultsDiv.appendChild(card);
   });
+  const allCourses = [];
+  const allCerts = [];
+  data.results.forEach(item => {
+    const rec = item.recommendations || {};
+    if (rec.courses) allCourses.push(...rec.courses);
+    if (rec.certifications) allCerts.push(...rec.certifications);
+  });
+  localStorage.setItem('catalog', JSON.stringify({ courses: allCourses, certifications: allCerts }));
   document.getElementById('overlay').classList.add('hidden');
+  stopProgress();
   selectedFile = null;
 });

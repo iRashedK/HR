@@ -16,6 +16,12 @@ def index():
         return HTMLResponse(content=f.read())
 
 
+@app.get('/library', response_class=HTMLResponse)
+def library():
+    with open('templates/library.html', 'r', encoding='utf-8') as f:
+        return HTMLResponse(content=f.read())
+
+
 
 @app.post('/upload')
 def upload(file: UploadFile = File(...)):
