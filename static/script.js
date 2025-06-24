@@ -102,6 +102,7 @@ function stopProgress() {
 }
 
 function createItem(item, type, highlight = false) {
+  if (!item || !item.name) return document.createElement('div');
   const div = document.createElement('div');
   div.className = `item ${type}`;
 
@@ -113,6 +114,12 @@ function createItem(item, type, highlight = false) {
   const title = document.createElement('span');
   title.className = 'item-title tooltip';
   title.textContent = item.name;
+  if (item.name.length > 25) {
+    const tip = document.createElement('span');
+    tip.className = 'tip';
+    tip.textContent = item.name;
+    title.appendChild(tip);
+  }
   if (item.desc) {
     const tip = document.createElement('span');
     tip.className = 'tip';
@@ -123,8 +130,14 @@ function createItem(item, type, highlight = false) {
   header.appendChild(title);
   if (item.price) {
     const priceBadge = document.createElement('span');
-    priceBadge.className = 'badge price-badge';
+    priceBadge.className = 'badge price-badge tooltip';
     priceBadge.textContent = `💸${item.price}`;
+    if (String(item.price).length > 6) {
+      const tip = document.createElement('span');
+      tip.className = 'tip';
+      tip.textContent = item.price;
+      priceBadge.appendChild(tip);
+    }
     header.appendChild(priceBadge);
   }
   div.appendChild(header);
@@ -196,8 +209,7 @@ function createJourney(steps, courses, certs) {
       if (remainingCourses.length) {
         const item = remainingCourses.shift();
         block.appendChild(createItem(item, 'course', first.includes(item.name)));
-      }
-      if (remainingCerts.length) {
+      } else if (remainingCerts.length) {
         const item = remainingCerts.shift();
         block.appendChild(createItem(item, 'cert', first.includes(item.name)));
       }

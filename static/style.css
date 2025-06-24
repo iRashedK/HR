@@ -24,6 +24,7 @@ body {
   margin: 0;
   transition: background 0.3s, color 0.3s;
   min-height: 100vh;
+  display: flex;
 }
 
 .sidebar {
@@ -31,19 +32,36 @@ body {
   top: 0;
   bottom: 0;
   left: 0;
-  width: 180px;
+  width: 200px;
   padding: 1rem;
   background: var(--card-bg);
   box-shadow: 2px 0 8px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  gap: .75rem;
+}
+.menu-title {
+  margin: 0 0 .5rem;
+  font-weight: bold;
+  font-size: 1.1rem;
 }
 .sidebar ul { list-style: none; padding: 0; }
-.sidebar li { margin-bottom: .75rem; }
-.sidebar a { color: var(--text); text-decoration: none; font-weight: bold; }
+.sidebar li { margin-bottom: .75rem; font-size: 1rem; }
+.sidebar a {
+  color: var(--text);
+  text-decoration: none;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+}
 .sidebar a:hover { color: var(--accent); }
+.sidebar i { width: 18px; text-align: center; }
 .main {
-  margin-left: 200px;
-  padding: 1rem;
-  max-width: 900px;
+  margin-left: 210px;
+  padding: 1rem 2rem;
+  flex: 1;
+  max-width: 1000px;
 }
 html[dir="rtl"] .sidebar {
   right: 0;
@@ -51,7 +69,7 @@ html[dir="rtl"] .sidebar {
 }
 html[dir="rtl"] .main {
   margin-left: 0;
-  margin-right: 200px;
+  margin-right: 210px;
 }
 
 .dropzone {
@@ -149,7 +167,7 @@ button.secondary {
 }
 
 .card {
-  background: var(--card-bg);
+  background: linear-gradient(135deg, var(--card-bg), var(--bg1));
   border-radius: 1rem;
   padding: 1rem;
   box-shadow: 0 4px 8px rgba(0,0,0,0.1);
@@ -201,8 +219,8 @@ button.secondary {
   box-shadow: 0 6px 12px rgba(0,0,0,0.15);
 }
 
-.item.cert { background: var(--cert-bg); }
-.item.course { background: var(--course-bg); }
+.item.cert { background: linear-gradient(135deg, var(--cert-bg), var(--card-bg)); }
+.item.course { background: linear-gradient(135deg, var(--course-bg), var(--card-bg)); }
 .item-header {
   display: flex;
   align-items: center;
