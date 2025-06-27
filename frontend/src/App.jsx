@@ -5,7 +5,7 @@ import Dashboard from './pages/Dashboard';
 import Employees from './pages/Employees';
 import Recommendations from './pages/Recommendations';
 import Library from './pages/Library';
-import UploadPage from './pages/UploadPage';
+import CVAnalyzer from './pages/CVAnalyzer';
 import SettingsPage from './pages/SettingsPage';
 import SkillGap from './pages/SkillGap';
 
@@ -14,7 +14,7 @@ const navItems = [
   { to: '/employees', icon: User, label: 'Employees' },
   { to: '/recommendations', icon: Target, label: 'Recommendations' },
   { to: '/library', icon: BookOpen, label: 'Library' },
-  { to: '/upload', icon: Upload, label: 'Upload' },
+  { to: '/cv', icon: Upload, label: 'CV Analyzer' },
   { to: '/settings', icon: Settings, label: 'Settings' },
   { to: '/skill-gap', icon: Puzzle, label: 'Skill Gap' },
 ];
@@ -47,7 +47,7 @@ export default function App() {
           <Route path="/employees" element={<Employees />} />
           <Route path="/recommendations" element={<Recommendations />} />
           <Route path="/library" element={<Library />} />
-          <Route path="/upload" element={<UploadPage />} />
+          <Route path="/cv" element={<CVAnalyzer />} />
           <Route path="/settings" element={<SettingsPage />} />
           <Route path="/skill-gap" element={<SkillGap />} />
           <Route path="*" element={<Dashboard />} />

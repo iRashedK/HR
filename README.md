@@ -25,7 +25,7 @@ cp .env.example .env
 # `OPENROUTER_TIMEOUT` and `OPENROUTER_RETRIES` tweak request behaviour
 make up  # runs docker compose up
 ```
-Open <http://localhost:8000> in your browser. Upload a CSV or Excel file and wait while the analyzer service fills the results table.
+Open <http://localhost:8000> in your browser. Upload a PDF or DOCX CV file and wait while the analyzer service processes it and fills the results table.
 In another terminal run the frontend:
 ```bash
 cd frontend

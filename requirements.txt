@@ -7,3 +7,5 @@ SQLAlchemy
 psycopg2-binary
 pika
 python-multipart
+pdfminer.six
+python-docx
