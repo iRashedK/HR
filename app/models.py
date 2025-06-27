@@ -12,4 +12,5 @@ class Result(Base):
     employee_name = Column(String)
     data = Column(JSONB)
     status = Column(String, default='pending')
+    elapsed = Column(String)
     created_at = Column(DateTime, server_default=func.now())

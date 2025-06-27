@@ -3,6 +3,7 @@ import json
 import logging
 import requests
 from functools import lru_cache
+import time
 import re
 
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
@@ -133,30 +134,31 @@ def generate_recommendations(employee: dict):
         "Authorization": f"Bearer {OPENROUTER_API_KEY}",
         "Content-Type": "application/json",
     }
+    timeout = int(os.getenv("OPENROUTER_TIMEOUT", "60"))
+    retries = int(os.getenv("OPENROUTER_RETRIES", "2"))
     logger.info("Sending payload for %s: %s", employee.get("name"), json.dumps(payload, ensure_ascii=False))
     try:
-        resp = requests.post(OPENROUTER_URL, json=payload, headers=headers, timeout=60)
-        logger.info("OpenRouter response text for %s: %s", employee.get("name"), resp.text)
-        if resp.status_code != 200:
+        attempt = 0
+        while True:
+            resp = requests.post(OPENROUTER_URL, json=payload, headers=headers, timeout=timeout)
+            logger.info("OpenRouter response text for %s: %s", employee.get("name"), resp.text)
+            if resp.status_code == 200:
+                break
             try:
                 err = resp.json().get("error", {}).get("message", resp.text)
             except Exception:
                 err = resp.text
             logger.error("OpenRouter returned %s: %s", resp.status_code, err)
-            if "not a valid model" in err.lower() and model != "openai/gpt-3.5-turbo":
-                logger.info("Retrying with fallback model openai/gpt-3.5-turbo")
+            if "not a valid model" in err.lower() and payload["model"] != "openai/gpt-3.5-turbo":
                 payload["model"] = "openai/gpt-3.5-turbo"
-                resp = requests.post(OPENROUTER_URL, json=payload, headers=headers, timeout=60)
-                logger.info("Retry response: %s", resp.text)
-                if resp.status_code != 200:
-                    try:
-                        err = resp.json().get("error", {}).get("message", resp.text)
-                    except Exception:
-                        err = resp.text
-                    logger.error("OpenRouter returned %s: %s", resp.status_code, err)
-                    return {"error": err}
+                logger.info("Retrying with fallback model openai/gpt-3.5-turbo")
             else:
-                return {"error": err}
+                attempt += 1
+                if attempt > retries:
+                    return {"error": err}
+                logger.info("Retrying request (%s/%s)", attempt, retries)
+                time.sleep(2)
+                continue
 
         try:
             data = resp.json()

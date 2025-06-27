@@ -20,6 +20,8 @@ cp .env.example .env
 # edit .env and add your OPENROUTER_API_KEY
 # you may also change `OPENROUTER_ANALYSIS_MODEL`, `USED_LANGUAGE`, or
 # `RABBITMQ_MAX_TRIES` if RabbitMQ starts slowly
+# `ANALYSIS_WORKERS` to control how many employees are processed in parallel
+# `OPENROUTER_TIMEOUT` and `OPENROUTER_RETRIES` tweak request behaviour
 make up  # runs docker compose up
 ```
 Open <http://localhost:8000> in your browser. Upload a CSV or Excel file and wait while the analyzer service fills the results table.
