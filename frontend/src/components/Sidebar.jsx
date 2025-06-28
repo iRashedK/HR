@@ -1,11 +1,21 @@
 import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, Upload, Target, BookOpen, Settings } from 'lucide-react';
+import {
+  LayoutDashboard,
+  Upload,
+  Target,
+  BookOpen,
+  Settings,
+  Users,
+  BarChart2,
+} from 'lucide-react';
 
 const items = [
   { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
   { to: '/upload', icon: Upload, label: 'Upload CV' },
+  { to: '/employees', icon: Users, label: 'Employees' },
   { to: '/recommendations', icon: Target, label: 'Training Recommendations' },
+  { to: '/skill-gap', icon: BarChart2, label: 'Skill Gap' },
   { to: '/library', icon: BookOpen, label: 'Library' },
   { to: '/settings', icon: Settings, label: 'Settings' },
 ];
