@@ -1,56 +1,38 @@
-import { useState } from 'react';
-import { NavLink } from 'react-router-dom';
-import {
-  LayoutDashboard,
-  Upload,
-  Target,
-  BookOpen,
-  Settings,
-  Users,
-  BarChart2,
-} from 'lucide-react';
+import { Home, Upload, BookOpen } from 'lucide-react';
+import { Link, useLocation } from 'react-router-dom';
 
-const items = [
-  { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
-  { to: '/upload', icon: Upload, label: 'Upload CV' },
-  { to: '/employees', icon: Users, label: 'Employees' },
-  { to: '/recommendations', icon: Target, label: 'Training Recommendations' },
-  { to: '/skill-gap', icon: BarChart2, label: 'Skill Gap' },
-  { to: '/library', icon: BookOpen, label: 'Library' },
-  { to: '/settings', icon: Settings, label: 'Settings' },
-];
+const Sidebar = () => {
+  const location = useLocation();
+  const isActive = (path) => location.pathname === path;
 
-export default function Sidebar() {
-  const [open, setOpen] = useState(true);
-  const rtl = typeof document !== 'undefined' && document.documentElement.dir === 'rtl';
   return (
-    <aside
-      className={`bg-[#f5f4ff] dark:bg-gray-800 dark:text-white text-gray-900 h-screen flex flex-col shadow-lg rounded-2xl p-4 transition-all duration-200 ${
-        open ? 'w-52' : 'w-16'
-      } ${rtl ? 'order-last' : ''}`}
-    >
-      <button className="p-2 mb-4" onClick={() => setOpen(!open)} aria-label="toggle sidebar">
-        ☰
-      </button>
-      {open && (
-        <h2 className="text-sm text-gray-500 dark:text-gray-400 mb-3">📚 الأقسام</h2>
-      )}
-      <nav className="space-y-3 flex-1">
-        {items.map(({ to, icon: Icon, label }) => (
-          <NavLink
-            key={to}
-            to={to}
-            className={({ isActive }) =>
-              `flex items-center gap-2 p-2 rounded-lg transition-colors duration-300 hover:bg-[#e3dbff] dark:hover:bg-gray-700 ${
-                isActive ? 'bg-[#c6bfff] dark:bg-gray-700 font-semibold' : ''
-              }`
-            }
-          >
-            <Icon size={20} />
-            {open && <span className="whitespace-nowrap">{label}</span>}
-          </NavLink>
-        ))}
+    <aside className="bg-[#f7f5ff] dark:bg-[#1e1b4b] w-64 min-h-screen p-6 rounded-r-xl shadow-lg text-right">
+      <h1 className="text-xl font-bold mb-8 text-gray-700 dark:text-white">رشُد</h1>
+      <nav className="space-y-4 text-sm">
+        <Link
+          to="/dashboard"
+          className={`flex items-center justify-end gap-3 px-4 py-2 rounded-lg ${isActive('/dashboard') ? 'bg-indigo-100 font-bold' : 'hover:bg-indigo-50'} dark:hover:bg-indigo-900 dark:text-gray-300`}
+        >
+          <Home size={18} />
+          <span>لوحة القيادة</span>
+        </Link>
+        <Link
+          to="/upload"
+          className={`flex items-center justify-end gap-3 px-4 py-2 rounded-lg ${isActive('/upload') ? 'bg-indigo-100 font-bold' : 'hover:bg-indigo-50'} dark:hover:bg-indigo-900 dark:text-gray-300`}
+        >
+          <Upload size={18} />
+          <span>رفع الملف</span>
+        </Link>
+        <Link
+          to="/library"
+          className={`flex items-center justify-end gap-3 px-4 py-2 rounded-lg ${isActive('/library') ? 'bg-indigo-100 font-bold' : 'hover:bg-indigo-50'} dark:hover:bg-indigo-900 dark:text-gray-300`}
+        >
+          <BookOpen size={18} />
+          <span>مكتبة الدورات</span>
+        </Link>
       </nav>
     </aside>
   );
-}
+};
+
+export default Sidebar;

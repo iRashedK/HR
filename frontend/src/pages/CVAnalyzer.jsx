@@ -1,5 +1,7 @@
 import { useState } from 'react';
 
+import Sidebar from '../components/Sidebar';
+
 export default function CVAnalyzer() {
   const [file, setFile] = useState(null);
   const [result, setResult] = useState(null);
@@ -32,17 +34,20 @@ export default function CVAnalyzer() {
   };
 
   return (
-    <div>
-      <h1 className="text-2xl font-bold mb-4">CV Analyzer</h1>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <input type="file" accept=".pdf,.docx" onChange={handleChange} />
-        <button type="submit" className="bg-indigo-600 text-white px-4 py-2 rounded">Upload</button>
-      </form>
-      {result && (
-        <pre className="mt-4 bg-gray-100 p-2 rounded text-sm overflow-auto">
-          {JSON.stringify(result, null, 2)}
-        </pre>
-      )}
+    <div className="flex">
+      <Sidebar />
+      <main className="flex-1 p-6">
+        <h1 className="text-2xl font-bold mb-4">CV Analyzer</h1>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <input type="file" accept=".pdf,.docx" onChange={handleChange} />
+          <button type="submit" className="bg-indigo-600 text-white px-4 py-2 rounded">Upload</button>
+        </form>
+        {result && (
+          <pre className="mt-4 bg-gray-100 p-2 rounded text-sm overflow-auto">
+            {JSON.stringify(result, null, 2)}
+          </pre>
+        )}
+      </main>
     </div>
   );
 }
