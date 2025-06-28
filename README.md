@@ -25,7 +25,7 @@ cp .env.example .env
 # `OPENROUTER_TIMEOUT` and `OPENROUTER_RETRIES` tweak request behaviour
 make up  # runs docker compose up
 ```
-Open <http://localhost:8000> in your browser to access the built‑in interface. Upload a PDF or DOCX CV file and wait while the analyzer service processes it and fills the results table.
+Open <http://localhost:8000> in your browser to access the built‑in interface. Upload a CSV or Excel file with employee data and wait while the analyzer service processes it and fills the results table.
 If you want to use the optional React UI, run the frontend separately:
 ```bash
 cd frontend

@@ -2,7 +2,7 @@ const texts = {
   ar: {
     title: 'رشُد',
     subtitle: 'منصة الذكاء الاصطناعي لإرشاد الموظفين نحو التطور المهني',
-    drop: 'اسحب الملف هنا أو اضغط لاختياره',
+    drop: 'اسحب ملف CSV أو Excel هنا أو اضغط لاختياره',
     employees: 'عدد الموظفين',
     totalCost: 'إجمالي التكلفة',
     badge: 'مقترحة بشدة',
@@ -17,7 +17,7 @@ const texts = {
   en: {
     title: 'Rushed',
     subtitle: 'AI platform guiding employees to professional growth',
-    drop: 'Drag file here or click to choose',
+    drop: 'Drag a CSV or Excel file here or click to choose',
     employees: 'Employees',
     totalCost: 'Total Cost',
     badge: 'Highly recommended',
