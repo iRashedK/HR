@@ -2,11 +2,10 @@ import { Home, Upload, BookOpen } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
-const Sidebar = () => {
+const Sidebar = ({ rtl }) => {
   const location = useLocation();
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const isActive = (path) => location.pathname === path;
-  const rtl = i18n.language === 'ar';
 
   return (
     <aside
