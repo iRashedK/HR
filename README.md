@@ -25,7 +25,7 @@ cp .env.example .env
 # `OPENROUTER_TIMEOUT` and `OPENROUTER_RETRIES` tweak request behaviour
 make up  # runs docker compose up
 ```
-Open <http://localhost:8000> in your browser to access the built‑in interface. Upload a CSV or Excel file with employee data and wait while the analyzer service processes it and fills the results table.
+After running `make up` visit <http://localhost:8000> in your browser to access the built‑in interface. Upload a CSV or Excel file and the service will automatically start processing it.  As results arrive you should see animated cards showing the roadmap steps with course and certification links.  If no results appear check the container logs and verify your `OPENROUTER_API_KEY` in `.env`.
 If you want to use the optional React UI, run the frontend separately:
 ```bash
 cd frontend
