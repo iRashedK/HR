@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>مكتبة الدورات - رشُد</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-a1DpwzOsDuwZQ+Q0jrISFRCGDpa2BkLomqKgJo0vvVuv5vWck/dwZ0pniS3pSkeYMt2rtI8BGG99nmCaTKf6Xg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body class="light">
+    <aside class="sidebar">
+        <h2 class="logo">رشُد</h2>
+        <h3 class="menu-title">قائمة التنقل</h3>
+        <nav>
+            <ul>
+                <li><a href="/"><i class="fas fa-home"></i> الرئيسية</a></li>
+                <li><a href="/library"><i class="fas fa-book"></i> مكتبة الدورات</a></li>
+            </ul>
+        </nav>
+    </aside>
+    <div class="main">
+        <header class="header">
+            <div class="titles">
+                <h1 id="title">مكتبة الدورات</h1>
+            </div>
+            <div class="actions">
+                <button id="lang-toggle" class="secondary">English</button>
+                <button id="mode-toggle" class="secondary">🌙</button>
+            </div>
+        </header>
+        <div class="filters">
+            <select id="type-filter">
+                <option value="all">الكل</option>
+                <option value="course">دورات</option>
+                <option value="cert">شهادات</option>
+            </select>
+            <select id="price-filter">
+                <option value="all">الكل</option>
+                <option value="free">مجانية</option>
+                <option value="paid">مدفوعة</option>
+            </select>
+        </div>
+        <div id="catalog" class="results"></div>
+    </div>
+<script src="/static/library.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

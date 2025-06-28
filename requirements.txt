@@ -1,0 +1,11 @@
+fastapi
+uvicorn[standard]
+pandas
+openpyxl
+requests
+SQLAlchemy
+psycopg2-binary
+pika
+python-multipart
+pdfminer.six
+python-docx
