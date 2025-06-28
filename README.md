@@ -26,12 +26,31 @@ cp .env.example .env
 make up  # runs docker compose up
 ```
 After running `make up` visit <http://localhost:8000> in your browser to access the built‑in interface. Upload a CSV or Excel file and the service will automatically start processing it.  As results arrive you should see animated cards showing the roadmap steps with course and certification links.  If no results appear check the container logs and verify your `OPENROUTER_API_KEY` in `.env`.
-If you want to use the optional React UI, run the frontend separately:
+If you want to develop the React UI separately, run it with Vite:
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
 This starts the React UI on <http://localhost:3000> with a sidebar for navigation.
+
+### Serving the React build with FastAPI
+
+To serve the React interface from FastAPI (available on <http://localhost:8000>), build the frontend and copy the output:
+
+```bash
+cd frontend
+npm run build
+cp -r dist ../app/frontend_build
+```
+
+Restart the containers:
+
+```bash
+make down
+make up
+```
+
+You should then see the latest build at <http://localhost:8000>.
 
 The app checks the model configured in `.env`. If the ID is invalid, it will retry automatically with the free `openai/gpt-3.5-turbo` model so processing continues without user intervention.

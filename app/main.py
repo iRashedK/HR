@@ -4,7 +4,7 @@ import json
 import logging
 import pika
 from fastapi import FastAPI, UploadFile, File, Query
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
 from app.utils import parse_file, wait_for_rabbitmq
@@ -26,21 +26,7 @@ channel.queue_declare(queue="tasks")
 
 app = FastAPI()
 app.mount('/static', StaticFiles(directory='static'), name='static')
-
-@app.get('/', response_class=HTMLResponse)
-def index():
-    with open('templates/index.html', 'r', encoding='utf-8') as f:
-        return HTMLResponse(content=f.read())
-
-@app.get('/library', response_class=HTMLResponse)
-def library():
-    with open('templates/library.html', 'r', encoding='utf-8') as f:
-        return HTMLResponse(content=f.read())
-
-@app.get('/dashboard', response_class=HTMLResponse)
-def dashboard():
-    with open('templates/dashboard.html', 'r', encoding='utf-8') as f:
-        return HTMLResponse(content=f.read())
+app.mount('/assets', StaticFiles(directory='frontend_build/assets'), name='assets')
 
 @app.post('/upload')
 def upload(file: UploadFile = File(...)):
@@ -71,3 +57,8 @@ def get_results(job: str = Query(...)):
     for r in items:
         results.append({"employee": r.employee_name, "status": r.status, "recommendations": r.data})
     return {"results": results}
+
+
+@app.get('/{full_path:path}')
+async def serve_react_app(full_path: str):
+    return FileResponse('frontend_build/index.html')
