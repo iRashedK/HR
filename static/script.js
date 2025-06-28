@@ -35,6 +35,7 @@ let currentLang = 'ar';
 let dark = false;
 let selectedFile = null;
 let progressInterval;
+let cancelRequested = false;
 
 function updateTexts() {
   const t = texts[currentLang];
@@ -61,6 +62,7 @@ document.getElementById('mode-toggle').onclick = () => {
 const dropzone = document.getElementById('dropzone');
 const fileInput = document.getElementById('file');
 const fileInfo = document.getElementById('file-info');
+const cancelBtn = document.getElementById('cancel-button');
 
 dropzone.addEventListener('click', () => fileInput.click());
 dropzone.addEventListener('dragover', e => { e.preventDefault(); dropzone.classList.add('over'); });
@@ -70,7 +72,7 @@ dropzone.addEventListener('drop', e => {
   dropzone.classList.remove('over');
   if (e.dataTransfer.files.length) {
     selectedFile = e.dataTransfer.files[0];
-    fileInfo.textContent = selectedFile.name;
+    fileInfo.textContent = selectedFile.name.length > 30 ? selectedFile.name.slice(0,27) + '...' : selectedFile.name;
     uploadFile();
   }
 });
@@ -78,12 +80,18 @@ dropzone.addEventListener('drop', e => {
 fileInput.addEventListener('change', () => {
   if (fileInput.files.length) {
     selectedFile = fileInput.files[0];
-    fileInfo.textContent = selectedFile.name;
+    fileInfo.textContent = selectedFile.name.length > 30 ? selectedFile.name.slice(0,27) + '...' : selectedFile.name;
     uploadFile();
   }
 });
 
 updateTexts();
+
+cancelBtn.addEventListener('click', () => {
+  cancelRequested = true;
+  document.getElementById('overlay').classList.add('hidden');
+  stopProgress();
+});
 
 function startProgress() {
   const bar = document.getElementById('progress-bar');
@@ -334,12 +342,14 @@ async function render(data) {
 async function poll(jobId, count) {
   let done = 0;
   while (done < count) {
+    if (cancelRequested) return;
     const resp = await fetch(`/results?job=${jobId}`);
     const data = await resp.json();
     await render(data);
     done = data.results.filter(r => r.status === 'done' || r.status === 'error').length;
     const progress = Math.round((done / count) * 100);
     document.getElementById('progress-bar').style.width = progress + '%';
+    document.getElementById('loading-text').textContent = progress < 50 ? (currentLang === 'ar' ? 'جارٍ استخراج التوصيات...' : 'Fetching recommendations...') : (currentLang === 'ar' ? 'جارٍ تجهيز النتائج...' : 'Preparing results...');
     if (done < count) await new Promise(res => setTimeout(res, 3000));
   }
   document.getElementById('overlay').classList.add('hidden');
@@ -351,6 +361,8 @@ async function uploadFile() {
   const formData = new FormData();
   formData.append('file', selectedFile);
   document.getElementById('overlay').classList.remove('hidden');
+  cancelRequested = false;
+  document.getElementById('loading-text').textContent = currentLang === 'ar' ? 'جارٍ تحليل الملف...' : 'Analyzing file...';
   startProgress();
   document.getElementById('alert').classList.add('hidden');
   let data;

@@ -18,7 +18,7 @@ body.dark {
 }
 
 body {
-  background: linear-gradient(135deg, var(--bg1), var(--bg2));
+  background: linear-gradient(to right, #f8f9fb, #edf0f4);
   color: var(--text);
   font-family: 'Cairo', sans-serif;
   margin: 0;
@@ -35,8 +35,8 @@ body {
 }
 
 .dropzone {
-  border: 3px dashed var(--accent);
-  border-radius: 1.5rem;
+  border: 2px solid #a58af7;
+  border-radius: 1rem;
   padding: 3rem;
   text-align: center;
   cursor: pointer;
@@ -46,13 +46,18 @@ body {
   align-items: center;
   gap: 1rem;
   background: linear-gradient(135deg, var(--card-bg), var(--bg1));
-  box-shadow: 0 6px 12px rgba(0,0,0,0.07);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
 
 .dropzone.over {
   background: rgba(132, 94, 247, 0.15);
   box-shadow: 0 0 12px var(--accent);
   transform: scale(1.02);
+}
+
+#drop-text {
+  font-size: 1.1rem;
+  color: #333;
 }
 
 .icon-circle {
@@ -373,6 +378,20 @@ button.secondary {
   height: 40px;
   animation: spin 1s linear infinite;
   margin-bottom: .5rem;
+}
+
+.cancel-button {
+  margin-top: .5rem;
+  background: transparent;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  border-radius: .75rem;
+  padding: 0.25rem 0.75rem;
+}
+
+.cancel-button:hover {
+  background: var(--accent);
+  color: #fff;
 }
 
 @keyframes spin { from { transform: rotate(0); } to { transform: rotate(360deg); } }
