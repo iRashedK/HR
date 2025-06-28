@@ -25,20 +25,25 @@ export default function Sidebar() {
   const rtl = typeof document !== 'undefined' && document.documentElement.dir === 'rtl';
   return (
     <aside
-      className={`bg-gray-800 text-white h-screen flex flex-col ${
-        open ? 'w-48' : 'w-14'
-      } transition-all duration-200 ${rtl ? 'order-last' : ''}`}
+      className={`bg-[#f5f4ff] dark:bg-gray-800 dark:text-white text-gray-900 h-screen flex flex-col shadow-lg rounded-2xl p-4 transition-all duration-200 ${
+        open ? 'w-52' : 'w-16'
+      } ${rtl ? 'order-last' : ''}`}
     >
-      <button className="p-2" onClick={() => setOpen(!open)} aria-label="toggle sidebar">
+      <button className="p-2 mb-4" onClick={() => setOpen(!open)} aria-label="toggle sidebar">
         ☰
       </button>
-      <nav className="mt-4 space-y-2 flex-1">
+      {open && (
+        <h2 className="text-sm text-gray-500 dark:text-gray-400 mb-3">📚 الأقسام</h2>
+      )}
+      <nav className="space-y-3 flex-1">
         {items.map(({ to, icon: Icon, label }) => (
           <NavLink
             key={to}
             to={to}
             className={({ isActive }) =>
-              `flex items-center gap-2 p-2 hover:bg-gray-700 ${isActive ? 'bg-gray-700' : ''}`
+              `flex items-center gap-2 p-2 rounded-lg transition-colors duration-300 hover:bg-[#e3dbff] dark:hover:bg-gray-700 ${
+                isActive ? 'bg-[#c6bfff] dark:bg-gray-700 font-semibold' : ''
+              }`
             }
           >
             <Icon size={20} />
