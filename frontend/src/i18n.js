@@ -5,17 +5,21 @@ const resources = {
   en: {
     translation: {
       title: 'Rushd',
-      dashboard: 'Dashboard',
-      upload: 'Upload CV',
-      library: 'Library',
+      sidebar: {
+        dashboard: 'Dashboard',
+        upload: 'Upload CV',
+        library: 'Course Library',
+      },
     },
   },
   ar: {
     translation: {
       title: 'رشُد',
-      dashboard: 'لوحة القيادة',
-      upload: 'رفع الملف',
-      library: 'مكتبة الدورات',
+      sidebar: {
+        dashboard: 'لوحة القيادة',
+        upload: 'رفع الملف',
+        library: 'مكتبة الدورات',
+      },
     },
   },
 };

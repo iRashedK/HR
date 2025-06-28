@@ -19,21 +19,21 @@ const Sidebar = () => {
           className={`flex items-center ${rtl ? 'flex-row-reverse justify-end' : 'justify-start'} gap-3 px-4 py-2 rounded-lg ${isActive('/dashboard') ? 'bg-indigo-100 font-bold' : 'hover:bg-indigo-50'} dark:hover:bg-indigo-900 dark:text-gray-300`}
         >
           <Home size={18} />
-          <span>{t('dashboard')}</span>
+          <span>{t('sidebar.dashboard')}</span>
         </Link>
         <Link
           to="/upload"
           className={`flex items-center ${rtl ? 'flex-row-reverse justify-end' : 'justify-start'} gap-3 px-4 py-2 rounded-lg ${isActive('/upload') ? 'bg-indigo-100 font-bold' : 'hover:bg-indigo-50'} dark:hover:bg-indigo-900 dark:text-gray-300`}
         >
           <Upload size={18} />
-          <span>{t('upload')}</span>
+          <span>{t('sidebar.upload')}</span>
         </Link>
         <Link
           to="/library"
           className={`flex items-center ${rtl ? 'flex-row-reverse justify-end' : 'justify-start'} gap-3 px-4 py-2 rounded-lg ${isActive('/library') ? 'bg-indigo-100 font-bold' : 'hover:bg-indigo-50'} dark:hover:bg-indigo-900 dark:text-gray-300`}
         >
           <BookOpen size={18} />
-          <span>{t('library')}</span>
+          <span>{t('sidebar.library')}</span>
         </Link>
       </nav>
     </aside>
