@@ -71,6 +71,11 @@ body {
   background: var(--accent);
   color: #fff;
 }
+.sidebar nav a.active {
+  background: var(--accent);
+  color: #fff;
+  font-weight: bold;
+}
 
 [dir="rtl"] .sidebar { order: 2; }
 [dir="rtl"] .main { order: 1; }

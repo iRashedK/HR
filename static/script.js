@@ -59,6 +59,12 @@ document.getElementById('mode-toggle').onclick = () => {
   updateTexts();
 };
 
+document.querySelectorAll('.sidebar nav a').forEach(a => {
+  if (a.getAttribute('href') === window.location.pathname) {
+    a.classList.add('active');
+  }
+});
+
 const dropzone = document.getElementById('dropzone');
 const fileInput = document.getElementById('file');
 const fileInfo = document.getElementById('file-info');
