@@ -1,0 +1,8 @@
+{
+  "title": "Rushd",
+  "sidebar": {
+    "dashboard": "Dashboard",
+    "upload": "Upload File",
+    "library": "Course Library"
+  }
+}

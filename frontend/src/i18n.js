@@ -1,27 +1,11 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
+import en from './locales/en.json';
+import ar from './locales/ar.json';
 
 const resources = {
-  en: {
-    translation: {
-      title: 'Rushd',
-      sidebar: {
-        dashboard: 'Dashboard',
-        upload: 'Upload CV',
-        library: 'Course Library',
-      },
-    },
-  },
-  ar: {
-    translation: {
-      title: 'رشُد',
-      sidebar: {
-        dashboard: 'لوحة القيادة',
-        upload: 'رفع الملف',
-        library: 'مكتبة الدورات',
-      },
-    },
-  },
+  en: { translation: en },
+  ar: { translation: ar },
 };
 
 const lang = localStorage.getItem('lang') || 'ar';
