@@ -7,7 +7,7 @@ This project "رشُد" analyzes employee data and suggests relevant certificati
 - **analyzer**: Worker service consuming tasks from RabbitMQ and calling OpenRouter.
 - **RabbitMQ**: message broker for asynchronous processing.
 - **PostgreSQL**: stores recommendations.
-- **frontend**: React + Tailwind interface with sidebar navigation.
+- **frontend**: React + Tailwind interface with a top navbar for navigation.
 
 The frontend offers a modern indigo theme with Arabic/English support and dark/light mode. Results appear in animated cards grouped by roadmap steps with links, prices and PDF export.
 
@@ -32,6 +32,6 @@ cd frontend
 npm install
 npm run dev
 ```
-This starts the React UI on <http://localhost:3000> with a sidebar for navigation.
+This starts the React UI on <http://localhost:3000> with a top navbar for navigation.
 
 The app checks the model configured in `.env`. If the ID is invalid, it will retry automatically with the free `openai/gpt-3.5-turbo` model so processing continues without user intervention.
